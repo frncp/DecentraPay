@@ -1,7 +1,6 @@
 pragma solidity ^0.8.4;
 
 
-
 contract ContractB{
     
 mapping(address => uint256) AddrMap;    
@@ -53,7 +52,7 @@ function ContractBalance() public view returns(uint256){
 }
 
 function getBalanceInEther() external view returns(uint){
-        return ((address(this).balance) ether);
+        return address(this).balance;
     }
 
 function getAccounts() external view returns(address[] memory){
