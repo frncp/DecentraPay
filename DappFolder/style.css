@@ -82,12 +82,13 @@ hr{
   text-align: center;
   justify-content: center;
   background-color: rgba(155, 124, 66, 0.185);
-  padding: 5rem 10rem 5rem 10rem;
+  padding: 5rem 2rem 5rem 2rem;
   margin: 0 20rem 0 20rem;
 }
 
 #paysection{
   display: flex;
+  width: 100%;
   justify-content: center;
   text-align: center;
   margin-bottom: 30px;
@@ -98,14 +99,12 @@ hr{
   padding:0.37rem 0.75rem;
   width: 50%;
   margin-right: 5px;
-  min-width: 200px;
 }
 #paysection select{
   flex-basis: 40%;
   padding:0.37rem 0.75rem;
   width: 20%;
   margin-right: 5px;
-  min-width: 200px;
 }
 
 #DiscountSection{
