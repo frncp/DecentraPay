@@ -157,7 +157,6 @@ hr{
 }
 
 #SubmitSection button:hover{
-  color:black;
-  background: white;
-  border: 1px solid #37AF65;
+  background: rgb(28, 102, 56);
+  border: 1px solid white;
 }
