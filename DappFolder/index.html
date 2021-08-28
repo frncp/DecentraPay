@@ -35,7 +35,7 @@
       <div id="payment_info_section">
         <label for="amount_input" class="display-block">Payment amount</label>
         <input class="input-large" type="number" value="0" min="0" max="999999" name="amount_input" id="amount_input" required>
-        <select class="input-large" name="unit_selection_list" id="unit_selection_list">
+        <select class="input-large" name="unit_selection_list" id="unit_selection_list" onchange="adaptMinValueToUnit()">
           <option value="wei">Wei</option>
           <option value="gwei">Gwei</option>
           <option value="ether" selected >Ether</option>
