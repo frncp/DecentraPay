@@ -1,3 +1,5 @@
+/* CSS RESET */
+
 html, body, div, span, applet, object, iframe,
 h1, h2, h3, h4, h5, h6, p, blockquote, pre,
 a, abbr, acronym, address, big, cite, code,
@@ -42,7 +44,18 @@ table {
 	border-spacing: 0;
 }
 
-.welcome_section {
+
+/* START OF CUSTOM STYLES */
+
+.display-none {
+  display: none;
+}
+
+.display-block {
+  display: block;
+}
+
+.welcome-section {
   display: flex;
   flex-direction: column;
   text-align: center;
@@ -51,23 +64,43 @@ table {
   width: 100%;
 }
 
-.welcome_section h1{
+.welcome-section h1{
   font-size: 2.8em;
   font-weight: bold;
   margin-bottom: 1.5rem;  
 }
 
-.welcome_section p{
+.welcome-section p{
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
 
-hr{
-  width:50%;
-  border-top: 2px dotted #303841;
+
+.main-body {
+  background: white;
+  border: 1px solid #000;
+  border-radius: 5px;
+  margin: 2em auto;
+  max-width: 600px;
+  padding: 2em;
+  text-align: center;
 }
 
-#PaymentSection{
+@media screen and (max-width: 800px) {
+ .main-body {
+    border-left: none;
+    border-right: none;
+    border-radius: 0;
+ }
+
+}
+
+.intro-title {
+  font-size: 1.5em;
+  font-weight: bold;
+}
+
+.payment-section{
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -76,78 +109,48 @@ hr{
   margin: 3.125rem auto 0 auto;
 }
 
-#InputForm{ 
-  display: flex;
-  flex-direction: column;
+
+.input-large {
+  font-size: 1.5em;
+  max-width: 500px;
+  border: none;
+  border-bottom: 2px solid gray;
+  -moz-appearance: textfield;
+}
+
+.input-large::-webkit-outer-spin-button,
+.input-large::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+.input-large:focus {
+ border-bottom: 2px solid black;
+ outline: none;
+ background-color: #F0FFFF;
+}
+
+.input-large:disabled {
+ background: transparent;
+ border-bottom: 2px solid #E7E7D0;
+ color: #E7E7D0;
+}
+
+.discount-section {
+ margin-top: 2em;
+ border-top: 1px dotted gray;
+ padding-top: 2em;
+}
+
+footer {
   text-align: center;
-  justify-content: center;
-  background-color: rgba(155, 124, 66, 0.185);
-  padding: 5rem 2rem 5rem 2rem;
-  margin: 0 20rem 0 20rem;
 }
 
-#paysection{
-  display: flex;
-  width: 100%;
-  justify-content: center;
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-#paysection input{
-  flex-basis: 60%;
-  padding:0.37rem 0.75rem;
-  width: 50%;
-  margin-right: 5px;
-}
-#paysection select{
-  flex-basis: 40%;
-  padding:0.37rem 0.75rem;
-  width: 20%;
-  margin-right: 5px;
-}
-
-#DiscountSection{
-  display: flex;
-  justify-content: center;
-  text-align: center;
-  margin-bottom: 50px;
-}
-
-#Selected{
-  flex-basis:5%;
-  padding:10px;
-  width: 70px;
-  min-width: 30px;
-  height: 30px;
-  flex-shrink: 1;
-}
-
-#DiscountAmount{
-  flex-basis: 95%;
-  margin-right: 5px;
-  padding:0.37rem 0.75rem;
-  flex-shrink: 90;
-}
-
-
-#InformationSection{
-  display: flex;
-  width: 100%;
-  align-items:center;
-  vertical-align: bottom;
-  justify-content:center;
-  flex-direction: column;
-  margin-bottom: 3.5rem;
-  margin-top: 3rem;
-  min-height: 50px;
-}
-
-#InformationSection p{
+footer p{
   font-size: 20px;
 }
 
-#SubmitSection button{
+.payment-button{
   width: 100%;
   height: 40px;
   padding:0.25rem 0.25rem 0.25rem 0.25rem;
@@ -158,9 +161,11 @@ hr{
   border: none;
   transition-duration: 0.4s;
   min-width: 200px;
+  cursor: pointer;
+  margin-top: 2em;
 }
 
-#SubmitSection button:hover{
+.payment-button:hover{
   background: rgb(28, 102, 56);
   border: 1px solid white;
 }

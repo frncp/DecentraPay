@@ -6,39 +6,59 @@
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel="stylesheet" href="style.css">
-  <script type="text/javascript" src="Functions.js"></script>
+  <script type="text/javascript" src="script.js"></script>
   <title>DecentraPay</title>
 </head>
 
 <body>
-  <section id="welcome_section" class="welcome_section">
-    <h1>DecentraPay Web App</h1>
-    <p>Discounted Decentralized payment system</p>
+  <section class="welcome-section">
+    <h1>DecentraPay</h1>
+    <p>Discounted decentralized payment system</p>
   </section>
-  <hr>
-  <section id="PaymentSection" class="PaymentSection">
-    <form id="InputForm" class="InputForm">
-      <div id="paysection">
-        <input type="number" placeholder="0 ether" id="spendnum" required>
-        <!-- TODO: min and max pay -->
-        <select id="Dropdown">
+
+<div class="main-body">
+  <section class="intro-section">
+    <noscript>
+    <p class="intro-title">JAVASCRIPT REQUIRED</p>
+    <p>Javascript is required to run this application, please make sure your browser supports Javascript to continue.</p>
+    </noscript>
+
+    <div id="provider_installation_prompt display-none">
+	<p class="intro-title">No Ethereum provider detected</p>
+	<p>Please install a provider like <a href="https://metamask.io/">MetaMask</a> to continue.</p>
+    </div>
+
+  <button>Connect</button> <!--TODO: Add function to connect to MetaMask and other providers -->
+  </section>
+  <section class="payment-section">
+    <form class="payment-input-form">
+      <div id="payment_info_section">
+        <label for="amount_input" class="display-block">Payment amount</label>
+        <input class="input-large" type="number" value="0" min="0" max="999999" name="amount_input" id="amount_input" required>
+        <select class="input-large" name="unit_selection_list" id="unit_selection_list">
           <option value="wei">Wei</option>
-          <option value="gwei" selected>Gwei</option>
-          <option value="Ether">Ether</option>
+          <option value="gwei">Gwei</option>
+          <option value="ether" selected >Ether</option>
         </select>
       </div>
-      <div id="DiscountSection">
-        <input type="number" name="discountext" id="DiscountAmount" readonly disabled>
-        <input type="checkbox" name="check" id="Selected">
+      <div id="discount_section" class="discount-section">
+
+        <input type="checkbox" name="discount_checkbox" id="discount_checkbox" onclick="enableDiscount()"> <label for="discount_checkbox">I would like to have a discount</label>
+
+<label for="discount_amount_input" class="display-block">Discount amount</label>
+        <input class="input-large" type="number" name="discount_amount_input" id="discount_amount_input" disabled>
       </div>
-      <div id="SubmitSection">
-        <button id="submitButton" type="button">Submit Request</button>
+      <div id="payment_submission_section">
+        <input class="payment-button" type="submit" value="Submit Payment" onclick="submitRequest(); return false">
       </div>
     </form>
   </section>
-  <footer id="InformationSection">
-    <p>Your Address:0x9ba7fde7e38539cDEa222Df67D506Ab5D426f462<span id="AddressInformation"></span></p>
-    <p>Balance:100 ehter<span id="BalanceInformation"></span></p>
+
+</div>
+
+  <footer>
+    <p>Your Address: <span id="address_information_web3">unavailable</span></p>
+    <p>Balance: <span id="balance_information_web3">unavailable</span></p>
   </footer>
 </body>
 
