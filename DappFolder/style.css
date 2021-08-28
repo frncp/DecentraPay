@@ -98,12 +98,14 @@ hr{
   padding:0.37rem 0.75rem;
   width: 50%;
   margin-right: 5px;
+  min-width: 200px;
 }
 #paysection select{
   flex-basis: 40%;
   padding:0.37rem 0.75rem;
   width: 20%;
   margin-right: 5px;
+  min-width: 200px;
 }
 
 #DiscountSection{
@@ -117,31 +119,33 @@ hr{
   flex-basis:5%;
   padding:10px;
   width: 70px;
+  min-width: 30px;
   height: 30px;
-
+  flex-shrink: 1;
 }
 
 #DiscountAmount{
   flex-basis: 95%;
   margin-right: 5px;
   padding:0.37rem 0.75rem;
+  flex-shrink: 90;
 }
 
 
 #InformationSection{
   display: flex;
-  position: fixed;
   width: 100%;
-  bottom: 0;
-  align-items: center;
-  justify-content: center;
+  align-items:center;
+  vertical-align: bottom;
+  justify-content:center;
   flex-direction: column;
   margin-bottom: 3.5rem;
+  margin-top: 3rem;
+  min-height: 50px;
 }
 
 #InformationSection p{
   font-size: 20px;
-
 }
 
 #SubmitSection button{
@@ -154,9 +158,14 @@ hr{
   color: white;
   border: none;
   transition-duration: 0.4s;
+  min-width: 200px;
 }
 
 #SubmitSection button:hover{
   background: rgb(28, 102, 56);
   border: 1px solid white;
+}
+
+body{
+  height: 100vh;
 }
