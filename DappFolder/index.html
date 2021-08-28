@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+  <title>DecentraPay</title>
+</head>
+
+<body>
+  <section id="welcome_section" class="welcome_section">
+    <h1>DecentraPay Web App</h1>
+    <p>Discounted Decentralized payment system</p>
+  </section>
+  <hr>
+  <section id="PaymentSection" class="PaymentSection">
+    <form id="InputForm" class="InputForm">
+      <div id="paysection">
+        <input type="number" placeholder="0 ether" id="spendnum" required>
+        <!-- TODO: min and max pay -->
+        <select id="Dropdown">
+          <option value="wei">Wei</option>
+          <option value="gwei" selected>Gwei</option>
+          <option value="Ether">Ether</option>
+        </select>
+      </div>
+      <div id="DiscountSection">
+        <input type="number" id="DiscountAmount" readonly disabled>
+        <input type="checkbox" id="Selected">
+      </div>
+      <div id="SubmitSection">
+        <button id="submitButton" type="button">Submit Request</button>
+      </div>
+    </form>
+  </section>
+  <footer id="InformationSection">
+    <p>Your Address:0x9ba7fde7e38539cDEa222Df67D506Ab5D426f462<span id="AddressInformation"></span></p>
+    <p>Balance:100 ehter<span id="BalanceInformation"></span></p>
+  </footer>
+</body>
+
+</html>
