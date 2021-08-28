@@ -7,6 +7,25 @@ function enabledisabletextbox(){
   }
 }
 
+function AdaptiveMinvalue(){
+  var selectedOption = document.getElementById("Dropdown").value;
+  var pay = document.getElementById("spendnum");
+  switch(selectedOption){
+    case "wei":
+      console.log("wei");
+      pay.setAttribute("min",1000);
+      break;
+    case "gwei":
+      console.log("gwei");
+      pay.setAttribute("min",2000);
+      break;
+    case "Ether":
+      console.log("ether");
+      pay.setAttribute("min",3000);
+      break;
+  }
+}
+
 function submitRequest(){
   var payment = document.getElementById("spendnum").value;
   var textbox = document.getElementById("DiscountAmount");
