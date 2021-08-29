@@ -1,11 +1,150 @@
 // CHECK IF WALLET IS AVAILABLE
+//import Web3 from 'web3';
 
 window.onload = function() {
+  getAddress();
   if (typeof window.ethereum !== 'undefined') {
-  document.getElementById("provider_installation_prompt").addClass("display-none")
+  document.getElementById("provider_installation_prompt").classList.add("display-none");
+  Web3 = new Web3(window.ethereum);
+  }else{
+  document.getElementById("metamaskButton").classList.add("display-none");
+    //web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
+  }
+  var DecentraPayContract = web3.eth.contract([
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "address",
+          "name": "sender",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "PaymentDone",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "DiscountRequest",
+          "type": "uint256"
+        }
+      ],
+      "name": "payAndRequestDiscount",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_address",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "DiscountRequest",
+          "type": "uint256"
+        }
+      ],
+      "name": "useDiscountAndDelete",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "ContractBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getAccounts",
+      "outputs": [
+        {
+          "internalType": "address[]",
+          "name": "",
+          "type": "address[]"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBalanceInEther",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "GetDiscount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    }
+  ])
+}
+
+
+async function getAddress(){
+  if(ethereum.isConnected()){
+  const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+  const account = accounts[0];
+  document.getElementById("address_information_web3").innerHTML = account;
   }
 }
 
+async function getCredit(){
+
+
+}
+
+function Connect(){
+  ethereum.request({method: 'eth_requestAccounts'});
+  getAddress();
+}
 
 function enableDiscount(){
   var checkbox = document.getElementById("discount_checkbox")

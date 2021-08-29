@@ -8,9 +8,19 @@
   <link rel="stylesheet" href="style.css">
   <script type="text/javascript" src="script.js"></script>
   <title>DecentraPay</title>
+  <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
 </head>
 
 <body>
+  <!--<script>
+    if(typeof web3 !== 'undefined'){
+      Web3 = new Web3(window.ethereum);
+    }else{
+      web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
+    }
+    //ethereum.request({method: 'eth_requestAccounts'});
+  </script>-->
+
   <section class="welcome-section">
     <h1>DecentraPay</h1>
     <p>Discounted decentralized payment system</p>
@@ -23,12 +33,11 @@
     <p>Javascript is required to run this application, please make sure your browser supports Javascript to continue.</p>
     </noscript>
 
-    <div id="provider_installation_prompt display-none">
+    <div id="provider_installation_prompt">
 	<p class="intro-title">No Ethereum provider detected</p>
 	<p>Please install a provider like <a href="https://metamask.io/">MetaMask</a> to continue.</p>
-    </div>
-
-  <button>Connect</button> <!--TODO: Add function to connect to MetaMask and other providers -->
+  </div>
+  <button id="metamaskButton" onclick="Connect()">Connect</button> <!--TODO: Add function to connect to MetaMask and other providers -->
   </section>
   <section class="payment-section">
     <form class="payment-input-form">
