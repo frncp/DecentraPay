@@ -1,16 +1,19 @@
-// CHECK IF WALLET IS AVAILABLE
-//import Web3 from 'web3';
 
+
+// Checks if Ethereum is available on the browser
 window.onload = function() {
-  getAddress();
   if (typeof window.ethereum !== 'undefined') {
-  document.getElementById("provider_installation_prompt").classList.add("display-none");
   Web3 = new Web3(window.ethereum);
-  }else{
-  document.getElementById("metamaskButton").classList.add("display-none");
-    //web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
-  }
-  var DecentraPayContract = web3.eth.contract([
+  } else {  
+ document.getElementById("provider_installation_prompt").classList.remove("display-none")
+  document.getElementById("provider_connection").classList.add("display-none");
+   }
+
+if (ethereum.isConnected()) {
+  Connect()
+}
+
+var DecentraPayContract = web3.eth.contract([
     {
       "anonymous": false,
       "inputs": [
@@ -128,22 +131,44 @@ window.onload = function() {
 }
 
 
-async function getAddress(){
+async function getAddress(accounts){
   if(ethereum.isConnected()){
-  const accounts = await ethereum.request({method: 'eth_requestAccounts'});
   const account = accounts[0];
   document.getElementById("address_information_web3").innerHTML = account;
   }
 }
+
+ethereum.on('accountsChanged', function (accounts) {
+  getAddress(accounts)
+});
 
 async function getCredit(){
 
 
 }
 
-function Connect(){
-  ethereum.request({method: 'eth_requestAccounts'});
-  getAddress();
+async function Connect() {
+if (!ethereum.isConnected()) {
+ try { 
+document.getElementById("provider_connection_button").setAttribute('disabled',true) = true
+  account = await ethereum.request({method: 'eth_requestAccounts'})
+ } catch(err) {
+  switch(err.code) {
+    case -32002: alert("activation"); break;
+    case 4001: alert("refused"); break;
+   }
+   return
+  }
+} else {
+  account = await ethereum.request({method: 'eth_requestAccounts'})
+}
+  goToPayment()
+  getAddress(account)
+}
+
+function goToPayment() {
+  document.getElementById("intro_section").classList.add("display-none")
+  document.getElementById("payment_section").classList.remove("display-none")
 }
 
 function enableDiscount(){

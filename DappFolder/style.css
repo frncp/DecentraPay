@@ -47,14 +47,6 @@ table {
 
 /* START OF CUSTOM STYLES */
 
-.display-none {
-  display: none;
-}
-
-.display-block {
-  display: block;
-}
-
 .welcome-section {
   display: flex;
   flex-direction: column;
@@ -185,4 +177,13 @@ body{
 
 #amount_input{
   flex-basis: 70%;
+}
+
+
+.display-none {
+  display: none;
+}
+
+.display-block {
+  display: block;
 }
