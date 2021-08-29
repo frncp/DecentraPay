@@ -17,8 +17,8 @@ function enableDiscount(){
 }
 
 function adaptMinValueToUnit(){
-  var selectedOption = document.getElementById("Dropdown").value;
-  var pay = document.getElementById("spendnum");
+  var selectedOption = document.getElementById("unit_selection_list").value;
+  var pay = document.getElementById("amount_input");
   switch(selectedOption){
     case "wei":
       console.log("wei");
@@ -28,7 +28,7 @@ function adaptMinValueToUnit(){
       console.log("gwei");
       pay.setAttribute("min",2000);
       break;
-    case "Ether":
+    case "ether":
       console.log("ether");
       pay.setAttribute("min",3000);
       break;
