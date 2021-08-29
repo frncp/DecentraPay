@@ -112,10 +112,11 @@ table {
 
 .input-large {
   font-size: 1.5em;
-  max-width: 500px;
+  /*max-width: 1000px;*/
   border: none;
   border-bottom: 2px solid gray;
   -moz-appearance: textfield;
+  margin: 5px;
 }
 
 .input-large::-webkit-outer-spin-button,
@@ -173,4 +174,15 @@ footer p{
 
 body{
   height: 100vh;
+}
+
+#payment_info_section{
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  padding: 5px;
+}
+
+#amount_input{
+  flex-basis: 70%;
 }
