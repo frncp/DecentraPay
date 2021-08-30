@@ -1,23 +1,22 @@
 // CHECK IF WALLET IS AVAILABLE
 var account;
+var DecentraPayContract;
 
 
 // Checks if Ethereum is available on the browser
 window.onload = function() {
   if (typeof window.ethereum !== 'undefined') {
-  document.getElementById("provider_installation_prompt").classList.add("display-none");
+  //document.getElementById("provider_installation_prompt").classList.add("display-none");
   web3 = new Web3(window.ethereum);
   }else{
   document.getElementById("metamaskButton").classList.add("display-none");
     //web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
   }
-  var ContractAddress = "0x20f11a61abd0ae386cfaca9bd96bfe3fa48094d6";
+  var ContractAddress = "0xf53b85d2854edcdb5d9677fab0ba215d33eac899";
   var abi = ReturnJSON();
-  var DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
+  DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
   if(ethereum.isConnected()){
-    getAddress().then(x => {
-      getCredit(DecentraPayContract,x);
-    });
+    Connect();
 }}
 
 async function getAddress(){
@@ -29,7 +28,7 @@ async function getAddress(){
 
 async function getCredit(DecentraPayContract,x){
   console.log(x);
-  var Storage = await DecentraPayContract.methods.getMyCredit(x).send({from: x});
+  var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
   console.log(Storage);
   document.getElementById("balance_information_web3").innerHTML = Storage;
 }
@@ -55,7 +54,7 @@ document.getElementById("provider_connection_button").setAttribute('disabled',tr
   account = await ethereum.request({method: 'eth_requestAccounts'})
 }
   goToPayment()
-  getAddress(account)
+  getAddress(account).then( account => getCredit(DecentraPayContract,account));
 }
 
 function goToPayment() {
@@ -111,11 +110,55 @@ function ReturnJSON(){
       "inputs": [
         {
           "internalType": "address",
-          "name": "_address",
+          "name": "_StorageAddress",
           "type": "address"
         }
       ],
-      "name": "GetDiscount",
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "Paysent",
+      "type": "event"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_discount",
+          "type": "uint256"
+        }
+      ],
+      "name": "SetDiscount",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getCurrentDiscount",
       "outputs": [
         {
           "internalType": "uint256",
@@ -132,16 +175,30 @@ function ReturnJSON(){
           "internalType": "address",
           "name": "_address",
           "type": "address"
-        },
+        }
+      ],
+      "name": "getMyCredit",
+      "outputs": [
         {
           "internalType": "uint256",
-          "name": "DiscountRequest",
+          "name": "",
           "type": "uint256"
         }
       ],
-      "name": "payAndRequestDiscount",
-      "outputs": [],
-      "stateMutability": "payable",
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "getStorageContract",
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
+      "stateMutability": "view",
       "type": "function"
     },
     {
@@ -153,16 +210,61 @@ function ReturnJSON(){
         },
         {
           "internalType": "uint256",
-          "name": "DiscountRequest",
+          "name": "RequestedDiscount",
           "type": "uint256"
         }
       ],
-      "name": "useDiscountAndDelete",
+      "name": "payAndApplyDiscount",
       "outputs": [],
       "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "payRequireDiscount",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "setOwner",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "setStorageContract",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [],
+      "name": "withdrow",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     }
   ]
    )));
-
 }
