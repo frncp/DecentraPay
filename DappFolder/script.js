@@ -1,6 +1,8 @@
 // CHECK IF WALLET IS AVAILABLE
 var account;
 
+
+// Checks if Ethereum is available on the browser
 window.onload = function() {
   if (typeof window.ethereum !== 'undefined') {
   document.getElementById("provider_installation_prompt").classList.add("display-none");
@@ -32,11 +34,33 @@ async function getCredit(DecentraPayContract,x){
   document.getElementById("balance_information_web3").innerHTML = Storage;
 }
 
-function Connect(){
-  ethereum.request({method: 'eth_requestAccounts'});
-  if(ethereum.isConnected()){
-  getAddress();
+ethereum.on('accountsChanged', function (accounts) {
+  getAddress(accounts)
+});
+
+
+async function Connect() {
+if (!ethereum.isConnected()) {
+ try { 
+document.getElementById("provider_connection_button").setAttribute('disabled',true) = true
+  account = await ethereum.request({method: 'eth_requestAccounts'})
+ } catch(err) {
+  switch(err.code) {
+    case -32002: alert("activation"); break;
+    case 4001: alert("refused"); break;
+   }
+   return
   }
+} else {
+  account = await ethereum.request({method: 'eth_requestAccounts'})
+}
+  goToPayment()
+  getAddress(account)
+}
+
+function goToPayment() {
+  document.getElementById("intro_section").classList.add("display-none")
+  document.getElementById("payment_section").classList.remove("display-none")
 }
 
 function enableDiscount(){
