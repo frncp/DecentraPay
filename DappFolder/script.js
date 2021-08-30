@@ -1,149 +1,42 @@
 // CHECK IF WALLET IS AVAILABLE
-//import Web3 from 'web3';
+var account;
 
 window.onload = function() {
-  getAddress();
   if (typeof window.ethereum !== 'undefined') {
   document.getElementById("provider_installation_prompt").classList.add("display-none");
-  Web3 = new Web3(window.ethereum);
+  web3 = new Web3(window.ethereum);
   }else{
   document.getElementById("metamaskButton").classList.add("display-none");
     //web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
   }
-  var DecentraPayContract = web3.eth.contract([
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "address",
-          "name": "sender",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
-      "name": "PaymentDone",
-      "type": "event"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_address",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "DiscountRequest",
-          "type": "uint256"
-        }
-      ],
-      "name": "payAndRequestDiscount",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address payable",
-          "name": "_address",
-          "type": "address"
-        },
-        {
-          "internalType": "uint256",
-          "name": "DiscountRequest",
-          "type": "uint256"
-        }
-      ],
-      "name": "useDiscountAndDelete",
-      "outputs": [],
-      "stateMutability": "payable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "ContractBalance",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getAccounts",
-      "outputs": [
-        {
-          "internalType": "address[]",
-          "name": "",
-          "type": "address[]"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "name": "getBalanceInEther",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_address",
-          "type": "address"
-        }
-      ],
-      "name": "GetDiscount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    }
-  ])
-}
-
+  var ContractAddress = "0x20f11a61abd0ae386cfaca9bd96bfe3fa48094d6";
+  var abi = ReturnJSON();
+  var DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
+  if(ethereum.isConnected()){
+    getAddress().then(x => {
+      getCredit(DecentraPayContract,x);
+    });
+}}
 
 async function getAddress(){
-  if(ethereum.isConnected()){
   const accounts = await ethereum.request({method: 'eth_requestAccounts'});
-  const account = accounts[0];
+  account = accounts[0];
   document.getElementById("address_information_web3").innerHTML = account;
-  }
+  return account;
 }
 
-async function getCredit(){
-
-
+async function getCredit(DecentraPayContract,x){
+  console.log(x);
+  var Storage = await DecentraPayContract.methods.getMyCredit(x).send({from: x});
+  console.log(Storage);
+  document.getElementById("balance_information_web3").innerHTML = Storage;
 }
 
 function Connect(){
   ethereum.request({method: 'eth_requestAccounts'});
+  if(ethereum.isConnected()){
   getAddress();
+  }
 }
 
 function enableDiscount(){
@@ -185,4 +78,67 @@ function submitRequest(){
   console.log("Sconto Richiesto: " + discount_amount)
   //Inizializza chiamata allo smart contract con payment e discountRequested
   return false
+}
+
+function ReturnJSON(){
+
+	return (JSON.parse(JSON.stringify([
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
+      "name": "GetDiscount",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "DiscountRequest",
+          "type": "uint256"
+        }
+      ],
+      "name": "payAndRequestDiscount",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_address",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "DiscountRequest",
+          "type": "uint256"
+        }
+      ],
+      "name": "useDiscountAndDelete",
+      "outputs": [],
+      "stateMutability": "payable",
+      "type": "function"
+    }
+  ]
+   )));
+
 }

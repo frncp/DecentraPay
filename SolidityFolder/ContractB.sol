@@ -26,12 +26,17 @@ function payAndRequestDiscount(address _address,uint256 DiscountRequest) externa
     addDiscount(_address,DiscountRequest);
 }
 
+
 function addDiscount(address _address,uint _discountRequest) internal{
     AddrMap[_address] += _discountRequest;
 }
 
 function GetDiscount(address _address) public view returns(uint){
+    if(CheckIfAddressExists(_address)){
     return AddrMap[_address];
+    }else
+        return 0;
+
 }
 
 function CheckIfAddressExists(address _address) private view returns (bool){
