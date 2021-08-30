@@ -4,20 +4,23 @@ var DecentraPayContract;
 
 
 // Checks if Ethereum is available on the browser
-window.onload = function() {
+window.onload = function(){
   if (typeof window.ethereum !== 'undefined') {
   document.getElementById("provider_installation_prompt").classList.add("display-none");
   web3 = new Web3(window.ethereum);
   }else{
   document.getElementById("metamaskButton").classList.add("display-none");
-    //web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
   }
-  var ContractAddress = "0x8a4dc5828d824078797d4086496d72be816fed0b";
-  var abi = ReturnJSON();
-  DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
+    //web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
+    console.log("Connection reset");
+    var ContractAddress = "0x8a4dc5828d824078797d4086496d72be816fed0b";
+    var abi = ReturnJSON();
+    DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
   if(ethereum.isConnected()){
     Connect();
-}}
+  }
+}
+
 
 async function getAddress(){
   const accounts = await ethereum.request({method: 'eth_requestAccounts'});
@@ -41,11 +44,7 @@ async function PayWithoutDiscount(x,AmountToPay){
 }
 
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
-  try{
-  await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay})
-  }catch(err){
-    console.log(err);
-  }
+  await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
 }
 
 ethereum.on('accountsChanged', function (accounts) {
@@ -94,7 +93,7 @@ function adaptMinValueToUnit(){
   }
 }
 
-function submitRequest(){
+function SubmitForm(){
   var payment_amount = document.getElementById("amount_input").value;
   var discount = document.getElementById("discount_amount_input").value;
   var discount_checkbox = document.getElementById("discount_checkbox");

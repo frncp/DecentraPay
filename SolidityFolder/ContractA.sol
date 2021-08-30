@@ -36,7 +36,7 @@ contract contractA{
     
     function payAndApplyDiscount(address payable _address,uint RequestedDiscount) amountAboveZero(msg.value) validAddress(_address) external payable{
         //ContractB StorageContract = ContractB(Storage_address);
-        StorageContract.useDiscountAndDelete(_address,RequestedDiscount);
+        StorageContract.useDiscountAndDelete{value: msg.value}(_address,RequestedDiscount);
     }
     
     function getMyCredit(address _address) public view returns(uint){

@@ -12,7 +12,6 @@
 </head>
 
 <body>
-
   <section class="welcome-section">
     <h1>DecentraPay</h1>
     <p>Discounted decentralized payment system</p>
@@ -36,10 +35,10 @@
  </div>
   </section>
   <section id="payment_section" class="payment-section display-none">
-    <form class="payment-input-form">
+    <form class="payment-input-form" onsubmit="SubmitForm();return false">
         <label for="amount_input" class="display-block">Payment amount</label>
         <div id="payment_info_section">
-        <input class="input-large" type="number" min="0.1" step="0.1" name="amount_input" id="amount_input" required>
+        <input class="input-large" type="number" min="0,1" max="10" step="0.1" name="amount_input" id="amount_input" required>
         <select class="input-large" name="unit_selection_list" id="unit_selection_list" onchange="adaptMinValueToUnit()">
           <option value="wei">Wei</option>
           <option value="gwei">Gwei</option>
@@ -54,7 +53,7 @@
         <input class="input-large" step="0.1" type="number" name="discount_amount_input" id="discount_amount_input" disabled>
       </div>
       <div id="payment_submission_section">
-        <input class="payment-button" type="submit" value="Submit Payment" onclick="submitRequest()" id="payment-button">
+        <input class="payment-button" type="submit" value="Submit Payment" id="payment-button">
       </div>
     </form>
   </section>
