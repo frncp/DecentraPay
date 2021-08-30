@@ -6,13 +6,13 @@ var DecentraPayContract;
 // Checks if Ethereum is available on the browser
 window.onload = function() {
   if (typeof window.ethereum !== 'undefined') {
-  //document.getElementById("provider_installation_prompt").classList.add("display-none");
+  document.getElementById("provider_installation_prompt").classList.add("display-none");
   web3 = new Web3(window.ethereum);
   }else{
   document.getElementById("metamaskButton").classList.add("display-none");
     //web3 = new Web3(new Web3.providers.HttpProviders("http://localhost:8545"));
   }
-  var ContractAddress = "0xf53b85d2854edcdb5d9677fab0ba215d33eac899";
+  var ContractAddress = "0x8a4dc5828d824078797d4086496d72be816fed0b";
   var abi = ReturnJSON();
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
   if(ethereum.isConnected()){
@@ -29,8 +29,23 @@ async function getAddress(){
 async function getCredit(DecentraPayContract,x){
   console.log(x);
   var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
-  console.log(Storage);
-  document.getElementById("balance_information_web3").innerHTML = Storage;
+  console.log("Storage:" + Storage);
+  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
+}
+
+async function PayWithoutDiscount(x,AmountToPay){
+  console.log(x);
+  console.log("Amount " + web3.utils.toWei(AmountToPay));
+  await DecentraPayContract.methods.payRequireDiscount(x).send({from: x, value: AmountToPay});
+
+}
+
+async function PayWithDiscount(x,AmountToPay,DiscountRequest){
+  try{
+  await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay})
+  }catch(err){
+    console.log(err);
+  }
 }
 
 ethereum.on('accountsChanged', function (accounts) {
@@ -40,21 +55,10 @@ ethereum.on('accountsChanged', function (accounts) {
 
 async function Connect() {
 if (!ethereum.isConnected()) {
- try { 
 document.getElementById("provider_connection_button").setAttribute('disabled',true) = true
-  account = await ethereum.request({method: 'eth_requestAccounts'})
- } catch(err) {
-  switch(err.code) {
-    case -32002: alert("activation"); break;
-    case 4001: alert("refused"); break;
-   }
-   return
-  }
-} else {
-  account = await ethereum.request({method: 'eth_requestAccounts'})
-}
-  goToPayment()
-  getAddress(account).then( account => getCredit(DecentraPayContract,account));
+ }
+  goToPayment();
+  getAddress().then( account => getCredit(DecentraPayContract,account));
 }
 
 function goToPayment() {
@@ -77,30 +81,36 @@ function adaptMinValueToUnit(){
   switch(selectedOption){
     case "wei":
       console.log("wei");
-      pay.setAttribute("min",1000);
+      pay.setAttribute("min",0);
       break;
     case "gwei":
       console.log("gwei");
-      pay.setAttribute("min",2000);
+      pay.setAttribute("min",0);
       break;
     case "ether":
       console.log("ether");
-      pay.setAttribute("min",3000);
+      pay.setAttribute("min",0);
       break;
   }
 }
 
 function submitRequest(){
-  var payment_amount = document.getElementById("amount_input").value
-  var discount = document.getElementById("discount_amount_input")
-  var discount_checkbox = document.getElementById("discount_checkbox")
-  if(discount_checkbox.checked){
-      var discount_amount = discount.value
+  var payment_amount = document.getElementById("amount_input").value;
+  var discount = document.getElementById("discount_amount_input").value;
+  var discount_checkbox = document.getElementById("discount_checkbox");
+  var selectedOption = document.getElementById("unit_selection_list").value;
+
+  payment_amount = ConvertToWei(payment_amount,selectedOption);
+  if(discount_checkbox.checked && discount!== undefined && discount !== 0){
+      discount = ConvertToWei(discount,selectedOption);
+      PayWithDiscount(account,payment_amount,discount);
+  }else{
+    PayWithoutDiscount(account,payment_amount);
   }
-  console.log("Pagamento Effettuato: " + payment_amount)
-  console.log("Sconto Richiesto: " + discount_amount)
-  //Inizializza chiamata allo smart contract con payment e discountRequested
-  return false
+}
+
+function ConvertToWei(amount,selectedOption){
+  return web3.utils.toWei(amount,selectedOption);
 }
 
 function ReturnJSON(){

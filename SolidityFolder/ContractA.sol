@@ -14,7 +14,7 @@ contract contractA{
     
     address private Storage_address;
     
-    uint256 actualDiscount;
+    uint256 actualDiscount = 50;
     
     address owner = address(0x5B38Da6a701c568545dCfcB03FcB875f56beddC4);
     
