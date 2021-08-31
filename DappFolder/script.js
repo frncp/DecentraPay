@@ -3,6 +3,7 @@ var account;
 var ContractAddress = "0x8a4dc5828d824078797d4086496d72be816fed0b";
 var abi = ReturnJSON();
 var DecentraPayContract;
+var accounts;
 
 window.onload = function(){
   if(window.ethereum.isConnected()){
@@ -13,7 +14,7 @@ window.onload = function(){
 }
 
 // Checks if Ethereum is available on the browser
-function AcceptConnection(){
+async function AcceptConnection(){
   if (typeof window.ethereum !== 'undefined') {
   console.log("Connection reset");
   web3 = new Web3(window.ethereum); 
@@ -30,7 +31,15 @@ function AcceptConnection(){
 
 
 async function getAddress(){
-  const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+  try{
+  accounts = await ethereum.request({method: 'eth_requestAccounts'});
+  }catch(err){
+    switch(err.code){
+      case -32002: alert("already active");break;
+      case 4001: alert("Connection Refused");break;
+    }
+    return
+  }
   if(accounts.length != 0){
   account = accounts[0];
   document.getElementById("address_information_web3").innerHTML = account;
@@ -48,35 +57,30 @@ async function getCredit(DecentraPayContract,x){
 }
 
 async function PayWithoutDiscount(x,AmountToPay){
-
   await DecentraPayContract.methods.payRequireDiscount(x).send({from: x, value: AmountToPay});
-
 }
 
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
   await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
 }
 
-window.ethereum.on('accountsChanged', function (accounts) {
+window.ethereum.on('accountsChanged',function (accounts) {
   if(accounts.length == 0){
     document.getElementById("intro_section").classList.remove("display-none")
     document.getElementById("payment_section").classList.add("display-none")
     document.getElementById("account_informations").classList.add("display-none")
-  }
-  getAddress(accounts)
-  AcceptConnection();
+    AcceptConnection();
+  }else{
+  getAddress(accounts)}
 });
 
 
 async function Connect() {
   var result = await getAddress();
   if(result){
-  console.log("var" + result);
-  console.log("Contract: " + DecentraPayContract);
   getCredit(DecentraPayContract,result);
   goToPayment();
   }
-//document.getElementById("provider_connection_button").setAttribute('disabled',true) = true
 }
 
 function goToPayment() {

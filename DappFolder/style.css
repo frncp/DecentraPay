@@ -159,8 +159,29 @@ footer p{
 }
 
 
+
 .payment-button:hover{
   background: rgb(28, 102, 56);
+  border: 1px solid white;
+}
+
+.connection-button{
+  background: #9B3624;
+  height: 40px;
+  width: 100%;
+  padding:0.25rem 0.25rem 0.25rem 0.25rem;
+  font-size: 24px;
+  border-radius: 2px;
+  color:white;
+  border: none;
+  transition-duration: 0.4s;
+  min-width: 200px;
+  cursor: pointer;
+  margin-top: 2em;
+}
+
+.connection-button:hover{
+  background: #5c2218;
   border: 1px solid white;
 }
 
