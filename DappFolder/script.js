@@ -51,7 +51,7 @@ async function getAddress(){
 
 async function getCredit(DecentraPayContract,x){
   console.log(x);
-  var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
+  var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x, gas:0});
   console.log("Storage:" + Storage);
   document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
 }
@@ -73,7 +73,6 @@ window.ethereum.on('accountsChanged',function (accounts) {
   getAddress(accounts)}
 });
 
-
 async function Connect() {
   var result = await getAddress();
   if(result){
@@ -81,6 +80,12 @@ async function Connect() {
   goToPayment();
   }
 }
+
+ethereum.on('chainChanged', (chainId) => {
+  if(chainId!= 3){
+    alert("Connect to Ropsten, please");
+  }
+});
 
 function goToPayment() {
   document.getElementById("intro_section").classList.add("display-none")
