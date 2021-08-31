@@ -1,22 +1,28 @@
 // CHECK IF WALLET IS AVAILABLE
 var account;
+var ContractAddress = "0x8a4dc5828d824078797d4086496d72be816fed0b";
+var abi = ReturnJSON();
 var DecentraPayContract;
 
+window.onload = function(){
+  if(window.ethereum.isConnected()){
+    AcceptConnection();
+    Connect();
+  }
+
+}
 
 // Checks if Ethereum is available on the browser
 function AcceptConnection(){
   if (typeof window.ethereum !== 'undefined') {
   console.log("Connection reset");
   web3 = new Web3(window.ethereum); 
-  console.log(web3);
   }else{
   //document.getElementById("metamaskButton").classList.add("display-none");
   web3 = new Web3('http://localhost:8545');
   }
   document.getElementById("provider_installation_prompt").classList.add("display-none");
-    var ContractAddress = "0x8a4dc5828d824078797d4086496d72be816fed0b";
-    var abi = ReturnJSON();
-    DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
+  DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
   if(window.ethereum.isConnected()){
     Connect();
   }
@@ -25,9 +31,13 @@ function AcceptConnection(){
 
 async function getAddress(){
   const accounts = await ethereum.request({method: 'eth_requestAccounts'});
+  if(accounts.length != 0){
   account = accounts[0];
   document.getElementById("address_information_web3").innerHTML = account;
   return account;
+  }
+  document.getElementById("address_information_web3").innerHTML = 0;
+  return 0;
 }
 
 async function getCredit(DecentraPayContract,x){
@@ -38,8 +48,7 @@ async function getCredit(DecentraPayContract,x){
 }
 
 async function PayWithoutDiscount(x,AmountToPay){
-  console.log(x);
-  console.log("Amount " + web3.utils.toWei(AmountToPay));
+
   await DecentraPayContract.methods.payRequireDiscount(x).send({from: x, value: AmountToPay});
 
 }
@@ -49,23 +58,22 @@ async function PayWithDiscount(x,AmountToPay,DiscountRequest){
 }
 
 window.ethereum.on('accountsChanged', function (accounts) {
-  if(typeof accounts[0] == 'undefined'){
+  if(accounts.length == 0){
     document.getElementById("intro_section").classList.remove("display-none")
     document.getElementById("payment_section").classList.add("display-none")
+    document.getElementById("account_informations").classList.add("display-none")
   }
   getAddress(accounts)
+  AcceptConnection();
 });
-
-window.ethereum.on('disconnect', function(){
-  console.log("Discounnection");
-});
-
 
 
 async function Connect() {
-  var accounts = await getAddress();
-  if(accounts.length != 0){
-  getAddress().then( account => getCredit(DecentraPayContract,account));
+  var result = await getAddress();
+  if(result){
+  console.log("var" + result);
+  console.log("Contract: " + DecentraPayContract);
+  getCredit(DecentraPayContract,result);
   goToPayment();
   }
 //document.getElementById("provider_connection_button").setAttribute('disabled',true) = true
@@ -74,6 +82,7 @@ async function Connect() {
 function goToPayment() {
   document.getElementById("intro_section").classList.add("display-none")
   document.getElementById("payment_section").classList.remove("display-none")
+  document.getElementById("account_informations").classList.remove("display-none")
 }
 
 function enableDiscount(){
