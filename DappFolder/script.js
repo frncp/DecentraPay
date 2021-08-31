@@ -69,7 +69,6 @@ window.ethereum.on('accountsChanged',function (accounts) {
     document.getElementById("intro_section").classList.remove("display-none")
     document.getElementById("payment_section").classList.add("display-none")
     document.getElementById("account_informations").classList.add("display-none")
-    AcceptConnection();
   }else{
   getAddress(accounts)}
 });
