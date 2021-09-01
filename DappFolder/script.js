@@ -7,22 +7,27 @@ var DecentraPayContract;
 var accounts;
 
 window.onload = function(){
-  if (typeof window.ethereum !== 'undefined') {
-  web3 = new Web3(window.ethereum);
-  } else {
-   document.getElementById("provider_installation_prompt").classList.remove("display-none")
-  document.getElementById("provider_connection").classList.add("display-none");
+  if(window.ethereum.isConnected()){
+    AcceptConnection();
+    //Connect();
   }
 
-  if(window.ethereum.isConnected()){
-    AcceptConnection()
-  }
 }
 
 // Checks if Ethereum is available on the browser
 async function AcceptConnection(){
+  if (typeof window.ethereum !== 'undefined') {
+  web3 = new Web3(window.ethereum);
+  }else{
+  //document.getElementById("metamaskButton").classList.add("display-none");
+  web3 = new Web3('http://localhost:8545');
+  }
+  document.getElementById("provider_installation_prompt").classList.add("display-none");
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
-  Connect()
+  console.log("test");
+  if(window.ethereum.isConnected()){
+    Connect();
+  }
 }
 
 async function getAddress(){
