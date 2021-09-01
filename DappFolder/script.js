@@ -1,6 +1,6 @@
 // CHECK IF WALLET IS AVAILABLE
 var account;
-var ContractAddress = "0x8a4dc5828d824078797d4086496d72be816fed0b";
+var ContractAddress = "0x2df7bd73910cd9313717d8b80373303d9624836f";
 var abi = ReturnJSON();
 var DecentraPayContract;
 var accounts;
@@ -8,7 +8,6 @@ var accounts;
 window.onload = function(){
   if(window.ethereum.isConnected()){
     AcceptConnection();
-    //Connect();
   }
 
 }
@@ -50,10 +49,20 @@ async function getAddress(){
 }
 
 async function getCredit(DecentraPayContract,x){
-  console.log(x);
-  var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x, gas:0});
+  var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
   console.log("Storage:" + Storage);
   document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
+  return Storage;
+}
+
+async function GetStorageBalance(){
+  var val = await DecentraPayContract.methods.getStorageContractBalance().call({from:account});
+  console.log("Storage contract Balance " + web3.utils.fromWei(val,'ether'));
+}
+
+async function GetInterfaceBalance(){
+  var val = await DecentraPayContract.methods.getBalance().call({from:account});
+  console.log("Interface contract Balance " + web3.utils.fromWei(val,'ether'));
 }
 
 async function PayWithoutDiscount(x,AmountToPay){
@@ -61,6 +70,7 @@ async function PayWithoutDiscount(x,AmountToPay){
 }
 
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
+  console.log("x::" + x);
   await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
 }
 
@@ -78,6 +88,8 @@ async function Connect() {
   if(result){
   getCredit(DecentraPayContract,result);
   goToPayment();
+  GetStorageBalance();
+  GetInterfaceBalance();
   }
 }
 
@@ -130,8 +142,10 @@ function SubmitForm(){
   payment_amount = ConvertToWei(payment_amount,selectedOption);
   if(discount_checkbox.checked && discount!== undefined && discount !== 0){
       discount = ConvertToWei(discount,selectedOption);
+      console.log("withDiscount")
       PayWithDiscount(account,payment_amount,discount);
   }else{
+    console.log("withoutDiscount");
     PayWithoutDiscount(account,payment_amount);
   }
 }
@@ -239,6 +253,19 @@ function ReturnJSON(){
       "type": "function"
     },
     {
+      "inputs": [],
+      "name": "getStorageContractBalance",
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
+      "stateMutability": "view",
+      "type": "function"
+    },
+    {
       "inputs": [
         {
           "internalType": "address payable",
@@ -301,6 +328,10 @@ function ReturnJSON(){
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
+    },
+    {
+      "stateMutability": "payable",
+      "type": "receive"
     }
   ]
    )));
