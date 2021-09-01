@@ -74,6 +74,7 @@ async function PayWithDiscount(x,AmountToPay,DiscountRequest){
 
 window.ethereum.on('accountsChanged',function (accounts) {
   if(accounts.length == 0){
+    document.getElementById("provider_connection").classList.remove("display-none");
     document.getElementById("intro_section").classList.remove("display-none")
     document.getElementById("payment_section").classList.add("display-none")
     document.getElementById("account_informations").classList.add("display-none")
