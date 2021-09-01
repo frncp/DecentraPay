@@ -38,7 +38,7 @@
     <form class="payment-input-form" onsubmit="SubmitForm();return false">
         <label for="amount_input" class="display-block">Payment amount</label>
         <div id="payment_info_section">
-        <input class="input-large" type="number" min="0.01" step="0.1" name="amount_input" id="amount_input" required>
+        <input class="input-large" type="number" min="0.01" step="0.01" name="amount_input" id="amount_input" required>
         <select class="input-large" name="unit_selection_list" id="unit_selection_list" onchange="adaptMinValueToUnit()" onload="adaptMinValueToUnit()">
           <option value="wei">Wei</option>
           <option value="gwei">Gwei</option>

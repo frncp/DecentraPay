@@ -120,8 +120,8 @@ function adaptMinValueToUnit(){
   var AdaptDiscount = document.getElementById("discount_amount_input");
   switch(selectedOption){
     case "wei":
-      pay.setAttribute("min",0);
-      console.log("old" + OldSelection);
+      pay.setAttribute("min",10000000000000000);
+      AdaptDiscount.setAttribute("min",10000000000000000)
       AdaptDiscount.setAttribute("max",Storage);
       if(selectedOption != OldSelection && pay.value != 0){
           pay.value = web3.utils.toWei(pay.value,OldSelection);
@@ -131,7 +131,8 @@ function adaptMinValueToUnit(){
       break;
     case "gwei":
       console.log("gwei");
-      pay.setAttribute("min",0);
+      pay.setAttribute("min",10000000);
+      AdaptDiscount.setAttribute("min",10000000)
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
       if(selectedOption != OldSelection && pay.value != 0){
           console.log("old" + OldSelection);
@@ -144,8 +145,8 @@ function adaptMinValueToUnit(){
         }}
       break;
     case "ether":
-      pay.setAttribute("min",0);
-      console.log("old" + OldSelection);
+      pay.setAttribute("min",0.01);
+      AdaptDiscount.setAttribute("min",0.01)
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
       if(selectedOption != OldSelection && pay.value != 0){
         var temp = web3.utils.toWei(pay.value,OldSelection);
