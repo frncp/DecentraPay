@@ -48,6 +48,8 @@ async function getCredit(DecentraPayContract,x){
   var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
   console.log("Storage:" + Storage);
   document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
+  var selectedOption = document.getElementById("unit_selection_list").value;
+  document.getElementById("discount_amount_input").setAttribute("max",web3.utils.fromWei(Storage,selectedOption));
   return Storage;
 }
 
