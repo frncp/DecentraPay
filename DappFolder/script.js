@@ -5,21 +5,25 @@ var ContractAddress = "0x2df7bd73910cd9313717d8b80373303d9624836f";
 var abi = ReturnJSON();
 var DecentraPayContract;
 var accounts;
+var OldSelection = 'ether';
 
 window.onload = function(){
-    AcceptConnection();
+  //document.getElementById("intro_section").classList.remove("display-none");
+  InizializeConnection();
+
 }
 
 // Checks if Ethereum is available on the browser
-async function AcceptConnection(){
+function InizializeConnection(){
   if (typeof window.ethereum !== 'undefined') {
   web3 = new Web3(window.ethereum);
+  document.getElementById("provider_installation_prompt").classList.add("display-none");
   }else{
   web3 = new Web3('http://localhost:8545');
   }
-  document.getElementById("provider_installation_prompt").classList.add("display-none");
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
   if(window.ethereum.isConnected()){
+    document.getElementById("intro_section").classList.add("display-none")
     Connect();
   }
 }
@@ -71,9 +75,9 @@ async function PayWithDiscount(x,AmountToPay,DiscountRequest){
   }
 }
 window.ethereum.on('accountsChanged',function (accounts) {
+  console.log(accounts);
   if(accounts.length == 0){
-    document.getElementById("provider_connection").classList.remove("display-none");
-    document.getElementById("intro_section").classList.remove("display-none")
+    document.getElementById("intro_section").classList.remove("display-none");
     document.getElementById("payment_section").classList.add("display-none")
     document.getElementById("account_informations").classList.add("display-none")
   }else{
@@ -97,7 +101,6 @@ ethereum.on('chainChanged', (chainId) => {
 });
 
 function goToPayment() {
-  document.getElementById("intro_section").classList.add("display-none")
   document.getElementById("payment_section").classList.remove("display-none")
   document.getElementById("account_informations").classList.remove("display-none")
 }
@@ -117,20 +120,45 @@ function adaptMinValueToUnit(){
   var AdaptDiscount = document.getElementById("discount_amount_input");
   switch(selectedOption){
     case "wei":
-      console.log(Storage);
       pay.setAttribute("min",0);
+      console.log("old" + OldSelection);
       AdaptDiscount.setAttribute("max",Storage);
+      if(selectedOption != OldSelection && pay.value != 0){
+          pay.value = web3.utils.toWei(pay.value,OldSelection);
+          if(AdaptDiscount.value != 0 )
+              AdaptDiscount.value = web3.utils.toWei(AdaptDiscount.value,OldSelection);
+      }
       break;
     case "gwei":
       console.log("gwei");
       pay.setAttribute("min",0);
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
+      if(selectedOption != OldSelection && pay.value != 0){
+          console.log("old" + OldSelection);
+          var temp = web3.utils.toWei(pay.value,OldSelection);
+          pay.value = web3.utils.fromWei(temp,selectedOption);
+        if(AdaptDiscount.value != 0){
+          console.log("Discount:" + AdaptDiscount.value);
+          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
+          AdaptDiscount.value = web3.utils.fromWei(Val,selectedOption);
+        }}
       break;
     case "ether":
       pay.setAttribute("min",0);
+      console.log("old" + OldSelection);
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
+      if(selectedOption != OldSelection && pay.value != 0){
+        var temp = web3.utils.toWei(pay.value,OldSelection);
+        pay.value = web3.utils.fromWei(temp,selectedOption);
+        if(AdaptDiscount.value != 0){
+          console.log("Discount:" + AdaptDiscount.value);
+          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
+          AdaptDiscount.value = web3.utils.fromWei(Val,selectedOption);
+        }}
       break;
   }
+  console.log("arrived");
+  OldSelection = selectedOption;
 }
 
 function SubmitForm(){
@@ -142,10 +170,8 @@ function SubmitForm(){
   payment_amount = ConvertToWei(payment_amount,selectedOption);
   if(discount_checkbox.checked && discount!== undefined && discount !== 0){
       discount = ConvertToWei(discount,selectedOption);
-      console.log("withDiscount")
       PayWithDiscount(account,payment_amount,discount);
   }else{
-    console.log("withoutDiscount");
     PayWithoutDiscount(account,payment_amount);
   }
 }
