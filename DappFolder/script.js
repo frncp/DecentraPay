@@ -1,29 +1,32 @@
 // CHECK IF WALLET IS AVAILABLE
 var account;
+var Storage;
 var ContractAddress = "0x2df7bd73910cd9313717d8b80373303d9624836f";
 var abi = ReturnJSON();
 var DecentraPayContract;
 var accounts;
 
 window.onload = function(){
-  if (typeof window.ethereum !== 'undefined') {
-  web3 = new Web3(window.ethereum);
-  } else {
-   document.getElementById("provider_installation_prompt").classList.remove("display-none")
-  document.getElementById("provider_connection").classList.add("display-none");
-  }
-
   if(window.ethereum.isConnected()){
-    AcceptConnection()
-  }
-}
+    AcceptConnection();
+    //Connect();
+  }}
 
 // Checks if Ethereum is available on the browser
 async function AcceptConnection(){
+  if (typeof window.ethereum !== 'undefined') {
+  web3 = new Web3(window.ethereum);
+  }else{
+  //document.getElementById("metamaskButton").classList.add("display-none");
+  web3 = new Web3('http://localhost:8545');
+  }
+  document.getElementById("provider_installation_prompt").classList.add("display-none");
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
-  Connect()
+  console.log("test");
+  if(window.ethereum.isConnected()){
+    Connect();
+  }
 }
-
 
 async function getAddress(){
   try{
@@ -45,11 +48,9 @@ async function getAddress(){
 }
 
 async function getCredit(DecentraPayContract,x){
-  var Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
+  Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
   console.log("Storage:" + Storage);
   document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
-  var selectedOption = document.getElementById("unit_selection_list").value;
-  document.getElementById("discount_amount_input").setAttribute("max",web3.utils.fromWei(Storage,selectedOption));
   return Storage;
 }
 
@@ -68,7 +69,6 @@ async function PayWithoutDiscount(x,AmountToPay){
 }
 
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
-  console.log("x::" + x);
   await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
 }
 
@@ -115,18 +115,21 @@ function enableDiscount(){
 function adaptMinValueToUnit(){
   var selectedOption = document.getElementById("unit_selection_list").value;
   var pay = document.getElementById("amount_input");
+  var AdaptDiscount = document.getElementById("discount_amount_input");
   switch(selectedOption){
     case "wei":
-      console.log("wei");
+      console.log(Storage);
       pay.setAttribute("min",0);
+      AdaptDiscount.setAttribute("max",Storage);
       break;
     case "gwei":
       console.log("gwei");
       pay.setAttribute("min",0);
+      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
       break;
     case "ether":
-      console.log("ether");
       pay.setAttribute("min",0);
+      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
       break;
   }
 }
