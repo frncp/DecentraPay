@@ -134,17 +134,7 @@ function adaptMinValueToUnit(){
       pay.setAttribute("min",0.01);
       AdaptDiscount.setAttribute("min",0.01)
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
-<<<<<<< HEAD
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
-=======
-      if(selectedOption != OldSelection && pay.value != 0){
-        var temp = web3.utils.toWei(pay.value,OldSelection);
-        pay.value = web3.utils.fromWei(temp,selectedOption);
-        if(AdaptDiscount.value != 0){
-          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
-          AdaptDiscount.value = web3.utils.fromWei(Val);
-        }}
->>>>>>> 1ba481df36cd8bcac02959c244855b0ba2c4ae89
       break;
   }
   OldSelection = selectedOption;
