@@ -48,10 +48,10 @@ async function getAddress(){
   return 0;
 }
 
-async function getCredit(DecentraPayContract,x){
-  Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
-  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
-  return Storage;
+async function getCredit(){
+  let amount = await Contract.contract.methods.getMyCredit(Wallet.address).call({from: Wallet.address});
+  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(amount,"ether") + " ether";
+  return amount;
 }
 
 async function PayWithoutDiscount(x,AmountToPay){
@@ -64,15 +64,7 @@ async function PayWithDiscount(x,AmountToPay,DiscountRequest){
   await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
   }
 }
-window.ethereum.on('accountsChanged',function (accounts) {
-  if(accounts.length == 0){
-    document.getElementById("provider_section").classList.remove("display-none");
-    document.getElementById("payment_section").classList.add("display-none")
-    document.getElementById("account_informations").classList.add("display-none")
-  }else{
-    document.getElementById("provider_section").classList.add("display-none");
-  getAddress()}
-});
+
 
 async function Connect() {
   var result = await getAddress();
@@ -81,12 +73,6 @@ async function Connect() {
   goToPayment();
   }
 }
-
-ethereum.on('chainChanged', (chainId) => {
-  if(chainId!= 3){
-    alert("Connect to Ropsten, please");
-  }
-});
 
 function goToPayment() {
   document.getElementById("payment_section").classList.remove("display-none")
@@ -111,29 +97,19 @@ function adaptMinValueToUnit(){
     case "wei":
       pay.setAttribute("min",10000000000000000);
       AdaptDiscount.setAttribute("min",10000000000000000)
-      AdaptDiscount.setAttribute("max",Storage);
+     //TODO: fix -> AdaptDiscount.setAttribute("max",Storage);
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "gwei":
       pay.setAttribute("min",10000000);
       AdaptDiscount.setAttribute("min",10000000)
-      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
-<<<<<<< HEAD
+      //TODO: fix --> AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
-=======
-      if(selectedOption != OldSelection && pay.value != 0){
-          var temp = web3.utils.toWei(pay.value,OldSelection);
-          pay.value = web3.utils.fromWei(temp,selectedOption);
-        if(AdaptDiscount.value != 0){
-          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
-          AdaptDiscount.value = web3.utils.fromWei(Val,selectedOption);
-        }}
->>>>>>> 1ba481df36cd8bcac02959c244855b0ba2c4ae89
       break;
     case "ether":
       pay.setAttribute("min",0.01);
       AdaptDiscount.setAttribute("min",0.01)
-      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
+      //TODO: fix --> AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
   }
@@ -146,7 +122,7 @@ function convertSelectedUnit(current_unit, previous_unit, amount_input, discount
         amount_input.value = web3.utils.fromWei(conversion,current_unit)
         if(discount_input.value != 0){
           var discount_conversion = web3.utils.toWei(discount_input.value,previous_unit)
-          discount_input.value = web3.utils.fromWei(Val)
+          discount_input.value = web3.utils.fromWei(discount_conversion,current_unit)
         }}
 }
 
@@ -156,21 +132,19 @@ function SubmitForm(){
   var discount_checkbox = document.getElementById("discount_checkbox");
   var selectedOption = document.getElementById("unit_selection_list").value;
 
-  payment_amount = ConvertToWei(payment_amount,selectedOption);
+  payment_amount = web3.utils.toWei(payment_amount,selectedOption);
   if(discount_checkbox.checked && discount!== undefined && discount !== 0){
-      discount = ConvertToWei(discount,selectedOption);
+      discount = web3.utils.toWei(discount,selectedOption);
       PayWithDiscount(account,payment_amount,discount);
   }else{
     PayWithoutDiscount(account,payment_amount);
   }
 }
 
-function ConvertToWei(amount,selectedOption){
-  return web3.utils.toWei(amount,selectedOption);
-}
 
 
-// TODO : t cos
+// Wallet
+// TODO : Object
 var Wallet = {
   address : undefined,
   connect : async function() {
@@ -178,8 +152,9 @@ var Wallet = {
  var accounts = await ethereum.request({method: 'eth_requestAccounts'});
  } catch(err) {
    switch(err.code){
-     case -32002: alert("already active");break;
-     case 4001: alert("Connection Refused");break;
+     case -32002: document.getElementById('error_refused_connection').classList.add('display-none');document.getElementById('error_accept_pending').classList.remove('display-none');break;
+     case 4001: 
+document.getElementById('error_accept_pending').classList.add('display-none');document.getElementById('error_refused_connection').classList.remove('display-none');break;
    }
    return err.code
  }
@@ -196,9 +171,52 @@ var Wallet = {
 
  getBalance : function() {
      return this.balance
+ },
+ 
+ isThereAnAddress : function() {
+     return (typeof address != undefined) ? true : false
  }
-
 }
+
+
+// Contract
+const Contract = {
+ address : "0x2df7bd73910cd9313717d8b80373303d9624836f",
+ abi : ReturnJSON(),
+ contract : undefined,
+ credit : undefined,
+ deploy : function() {
+     this.contract = new web3.eth.Contract(this.abi,this.address)
+ },
+ fetchCredit : async function(wallet) {
+    if (this.contract)
+     this.credit = await this.contract.methods.getMyCredit(wallet.address).call({from: wallet.address});
+ }
+}
+
+
+/* EVENT HANDLING */
+
+
+// Account change
+window.ethereum.on('accountsChanged',function (accounts) {
+  if(accounts.length == 0){
+    document.getElementById("provider_section").classList.remove("display-none");
+    document.getElementById("payment_section").classList.add("display-none")
+    document.getElementById("account_informations").classList.add("display-none")
+  }else{
+    document.getElementById("provider_section").classList.add("display-none");
+  getAddress()}
+});
+
+// Network switch
+ethereum.on('chainChanged', (chainId) => {
+  location.reload()
+});
+
+
+
+/* START OF ABI */
 
 function ReturnJSON(){
 
