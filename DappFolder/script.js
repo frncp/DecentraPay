@@ -15,27 +15,29 @@ window.onload = function(){
 // Checks if Ethereum is available on the browser
 function isEthereumProviderInstalled() {
   if (typeof window.ethereum !== 'undefined') {
-  web3 = new Web3(window.ethereum);
+    web3 = new Web3(window.ethereum);
   return true
   } else {
   web3 = new Web3('http://localhost:8545');
  document.getElementById("provider_installation_prompt").classList.remove("display-none");
   return false
-  }
+  }  
 }
 
-function InizializeConnection(){
+async function InizializeConnection(){
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
-  web3.eth.net.isListening().then(function(){
-    Connect();})}
+  var result = await getAddress();
+  if(result != undefined){
+    Connect(result);
+  }}
 
 async function getAddress(){
   try{
   accounts = await ethereum.request({method: 'eth_requestAccounts'});
   }catch(err){
     switch(err.code){
-      case -32002: alert("already active");break;
-      case 4001: alert("Connection Refused");break;
+      case -32002: break;
+      case 4001:break;
     }
     return
   }
@@ -74,13 +76,11 @@ window.ethereum.on('accountsChanged',function (accounts) {
   getAddress()}
 });
 
-async function Connect() {
-  var result = await getAddress();
-  if(result){
+function Connect(result) {
   getCredit(DecentraPayContract,result);
   goToPayment();
+  document.getElementById("main-body").classList.remove("display-none");
   }
-}
 
 ethereum.on('chainChanged', (chainId) => {
   if(chainId!= 3){

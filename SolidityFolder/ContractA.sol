@@ -61,7 +61,7 @@ contract contractA{
     }
     
     modifier amountAboveZero(uint _amount){
-        require(_amount != 0);
+        require(_amount > 0 );
         _;
     }
     
