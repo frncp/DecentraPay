@@ -1,15 +1,62 @@
 // CHECK IF WALLET IS AVAILABLE
-var account;
-var Storage;
-var ContractAddress = "0x2df7bd73910cd9313717d8b80373303d9624836f";
-var abi = ReturnJSON();
-var DecentraPayContract;
-var accounts;
 var OldSelection = 'ether';
 
 window.onload = function(){
   if(isEthereumProviderInstalled())
      InizializeConnection();
+}
+
+// Wallet
+// TODO : Object
+var Wallet = {
+  address : undefined,
+  connect : async function() {
+   try{
+ var accounts = await ethereum.request({method: 'eth_requestAccounts'});
+ } catch(err) {
+   switch(err.code){
+     case -32002: document.getElementById('error_refused_connection').classList.add('display-none');document.getElementById('error_accept_pending').classList.remove('display-none');break;
+     case 4001: 
+document.getElementById('error_accept_pending').classList.add('display-none');document.getElementById('error_refused_connection').classList.remove('display-none');break;
+   }
+   return err.code
+ }
+ if(accounts.length != 0){
+  let address = accounts[0];
+  this.address = address
+ } else {
+  this.address = undefined
+ }
+ return 0
+},
+
+ getAddress : function() {
+ return this.address
+  },
+
+ getBalance : function() {
+     return this.balance
+ },
+ 
+ isThereAnAddress : function() {
+     return (typeof address != undefined) ? true : false
+ }
+}
+
+
+// Contract
+const Contract = {
+ address : "0x2df7bd73910cd9313717d8b80373303d9624836f",
+ abi : ReturnJSON(),
+ contract : undefined,
+ credit : undefined,
+ deploy : function() {
+     this.contract = new web3.eth.Contract(this.abi,this.address)
+ },
+ fetchCredit : async function(wallet) {
+    if (this.contract)
+     this.credit = await this.contract.methods.getMyCredit(wallet.address).call({from: wallet.address});
+ }
 }
 
 // Checks if Ethereum is available on the browser
@@ -25,53 +72,38 @@ function isEthereumProviderInstalled() {
 }
 
 function InizializeConnection(){
-  DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
+  Contract.deploy()
   web3.eth.net.isListening().then(function(){
     Connect();})}
 
-async function getAddress(){
-  try{
-  accounts = await ethereum.request({method: 'eth_requestAccounts'});
-  }catch(err){
-    switch(err.code){
-      case -32002: alert("already active");break;
-      case 4001: alert("Connection Refused");break;
-    }
-    return
-  }
-  if(accounts.length != 0){
-  account = accounts[0];
-  document.getElementById("address_information_web3").innerHTML = account;
-  return account;
-  }
-  document.getElementById("address_information_web3").innerHTML = 0;
-  return 0;
+function getAddress(){ 
+  document.getElementById("address_information_web3").innerHTML = Wallet.address;
 }
 
-async function getCredit(){
-  let amount = await Contract.contract.methods.getMyCredit(Wallet.address).call({from: Wallet.address});
-  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(amount,"ether") + " ether";
-  return amount;
+function getCredit(){
+  Contract.fetchCredit(Wallet).then( function() {
+  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei((Contract.credit).toString(),"ether") + " ether"; })
 }
 
 async function PayWithoutDiscount(x,AmountToPay){
-  await DecentraPayContract.methods.payRequireDiscount(x).send({from: x, value: AmountToPay});
+  await Contract.contract.methods.payRequireDiscount(x).send({from: x, value: AmountToPay});
 }
 
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
-  if(Storage >= DiscountRequest){
+  if(Contract.credit >= DiscountRequest){
   var AmountToPay = AmountToPay - DiscountRequest;
-  await DecentraPayContract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
+  await Contract.contract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
   }
 }
 
 
-async function Connect() {
-  var result = await getAddress();
-  if(result){
-  getCredit(DecentraPayContract,result);
+function Connect() {
+  Wallet.connect().then( function() {
+  if(Wallet.isThereAnAddress()){
+  getAddress()
+  getCredit();
   goToPayment();
-  }
+  }})
 }
 
 function goToPayment() {
@@ -143,56 +175,7 @@ function SubmitForm(){
 
 
 
-// Wallet
-// TODO : Object
-var Wallet = {
-  address : undefined,
-  connect : async function() {
-   try{
- var accounts = await ethereum.request({method: 'eth_requestAccounts'});
- } catch(err) {
-   switch(err.code){
-     case -32002: document.getElementById('error_refused_connection').classList.add('display-none');document.getElementById('error_accept_pending').classList.remove('display-none');break;
-     case 4001: 
-document.getElementById('error_accept_pending').classList.add('display-none');document.getElementById('error_refused_connection').classList.remove('display-none');break;
-   }
-   return err.code
- }
-  if(accounts.length != 0){
- var address = accounts[0];
- this.address = address
- return 0
- }
-},
 
- getAddress : function() {
- return this.address
-  },
-
- getBalance : function() {
-     return this.balance
- },
- 
- isThereAnAddress : function() {
-     return (typeof address != undefined) ? true : false
- }
-}
-
-
-// Contract
-const Contract = {
- address : "0x2df7bd73910cd9313717d8b80373303d9624836f",
- abi : ReturnJSON(),
- contract : undefined,
- credit : undefined,
- deploy : function() {
-     this.contract = new web3.eth.Contract(this.abi,this.address)
- },
- fetchCredit : async function(wallet) {
-    if (this.contract)
-     this.credit = await this.contract.methods.getMyCredit(wallet.address).call({from: wallet.address});
- }
-}
 
 
 /* EVENT HANDLING */
@@ -200,13 +183,14 @@ const Contract = {
 
 // Account change
 window.ethereum.on('accountsChanged',function (accounts) {
-  if(accounts.length == 0){
+  if (accounts.length == 0) {
     document.getElementById("provider_section").classList.remove("display-none");
     document.getElementById("payment_section").classList.add("display-none")
     document.getElementById("account_informations").classList.add("display-none")
-  }else{
+  } else {
     document.getElementById("provider_section").classList.add("display-none");
-  getAddress()}
+    Connect()
+ }
 });
 
 // Network switch
