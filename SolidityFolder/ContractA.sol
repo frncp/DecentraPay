@@ -15,15 +15,16 @@ contract contractA{
     
     address private Storage_address;
     
-    uint256 private actualDiscount = 50;
+    uint256 private actualDiscount;
     
     address private owner;
     
     ContractB StorageContract;
     
-    constructor(address _StorageAddress){
+    constructor(address _StorageAddress,uint _discount){
         Storage_address=_StorageAddress;
         owner = msg.sender;
+        actualDiscount = _discount;
         StorageContract = ContractB(Storage_address);
     }
     
@@ -31,18 +32,27 @@ contract contractA{
     
     function payRequireDiscount(address payable _address)  amountAboveZero(msg.value) validAddress(_address) external payable{
         uint256 calcDiscount = msg.value*actualDiscount/100;
-        require((calcDiscount/10000)*10000 == calcDiscount);
         StorageContract.payAndRequestDiscount{value: calcDiscount}(_address,calcDiscount);
         emit Paysent(calcDiscount);
     }
     
-    function payAndApplyDiscount(address payable _address,uint RequestedDiscount) amountAboveZero(msg.value) validAddress(_address) external payable{
-        StorageContract.useDiscountAndDelete(_address,RequestedDiscount);
+    function payAndApplyDiscount(address payable _address,uint _RequestedDiscount) validAddress(_address) amountAboveZero(msg.value) ValidDiscountRequest(msg.sender,_RequestedDiscount) external payable{
+        StorageContract.useDiscountAndDelete(_address,_RequestedDiscount);
     }
     
     function getMyCredit(address _address) public view returns(uint){
         uint balance = StorageContract.GetDiscount(_address);
         return balance;
+    }
+
+    modifier ValidDiscountRequest(address _address,uint _RequestedDiscount) {
+        require(StorageContract.GetDiscount(_address) >= _RequestedDiscount);
+        _;
+    }
+
+    modifier UnderFlowDetection(uint _Value) {
+        require((_Value/10000)*10000 == _Value);
+        _;
     }
 
     modifier OnlyOwnerof(){
@@ -69,10 +79,11 @@ contract contractA{
     }
     
     function SetDiscount(uint _discount) external OnlyOwnerof{
+        require(actualDiscount >= 0 && actualDiscount<=100);
         actualDiscount = _discount;
     }
     
-    function getCurrentDiscount() external view returns(uint){
+    function getCurrentDiscount() external OnlyOwnerof view returns(uint){
         return actualDiscount;
     }
     
@@ -84,7 +95,7 @@ contract contractA{
         owner = _address;
     }
     
-    function getStorageContractBalance() public view returns(uint){
+    function getStorageContractBalance() public OnlyOwnerof view returns(uint){
         return StorageContract.ContractBalance();
     }
     

@@ -1,5 +1,6 @@
 pragma solidity ^0.8.4;
 
+
 contract ContractB{
     
 mapping(address => uint256) AddrMap; 
@@ -7,16 +8,16 @@ mapping(address => bool) IfExistAddress;
 address[] private Accounts;
 
 address private bAddress;
+
 event PaymentDone(address sender,uint value);
 
 receive() external payable{}
-
 
 function useDiscountAndDelete(address payable _address,uint DiscountRequest) external payable{
     require(DiscountRequest <= AddrMap[_address],"Balance not sufficent");
     require((DiscountRequest/10000)*10000 == DiscountRequest);
     AddrMap[_address] -= DiscountRequest;
-    (bool sent,) = msg.sender.call{value: DiscountRequest, gas: 2300}("");
+    (bool sent,) = _address.call{value: DiscountRequest, gas: 2300}("");
     require(sent,"Transaction Failed");
     emit PaymentDone(msg.sender,msg.value);
 
