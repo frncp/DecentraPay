@@ -18,18 +18,18 @@
   </section>
 
 <div class="main-body">
-  <section id="intro_section" class="intro-section">
+  <section id="intro_section" class="intro-section display-none">
     <noscript>
     <p class="intro-title">JAVASCRIPT REQUIRED</p>
     <p>Javascript is required to run this application, please make sure your browser supports Javascript to continue.</p>
     </noscript>
 
-    <div id="provider_installation_prompt">
+    <div id="provider_installation_prompt" class="display-none">
 	<p class="intro-title">No Ethereum provider detected</p>
 	<p>Please install a provider like <a href="https://metamask.io/">MetaMask</a> to continue.</p>
   </div>
 
-  <div id="provider_connection">
+  <div id="provider_section" class="display-none">
   <p class="intro-title">Connect to your provider to start using the app</p>
   <button id="provider_connection_button" class="connection-button" onclick="InizializeConnection()">Connect</button>
  </div>

@@ -8,25 +8,23 @@ var accounts;
 var OldSelection = 'ether';
 
 window.onload = function(){
-  //document.getElementById("intro_section").classList.remove("display-none");
   InizializeConnection();
-
 }
 
 // Checks if Ethereum is available on the browser
 function InizializeConnection(){
   if (typeof window.ethereum !== 'undefined') {
   web3 = new Web3(window.ethereum);
-  document.getElementById("provider_installation_prompt").classList.add("display-none");
+  //document.getElementById("provider_installation_prompt").classList.remove("display-none");
   }else{
   web3 = new Web3('http://localhost:8545');
   }
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
-  if(window.ethereum.isConnected()){
-    document.getElementById("intro_section").classList.add("display-none")
+  console.log("arrived");
+  if(!window.ethereum.isConnected()){
+    console.log("logged");
     Connect();
-  }
-}
+}}
 
 async function getAddress(){
   try{
@@ -78,8 +76,9 @@ window.ethereum.on('accountsChanged',function (accounts) {
   console.log(accounts);
   if(accounts.length == 0){
     document.getElementById("intro_section").classList.remove("display-none");
-    document.getElementById("payment_section").classList.add("display-none")
-    document.getElementById("account_informations").classList.add("display-none")
+    document.getElementById("provider_section").classList.remove("display-none");
+    document.getElementById("payment_section").classList.add("display-none");
+    document.getElementById("account_informations").classList.remove("display-none");
   }else{
   getAddress()}
 });
@@ -101,8 +100,10 @@ ethereum.on('chainChanged', (chainId) => {
 });
 
 function goToPayment() {
-  document.getElementById("payment_section").classList.remove("display-none")
-  document.getElementById("account_informations").classList.remove("display-none")
+  document.getElementById("intro_section").classList.add("display-none");
+  document.getElementById("provider_section").classList.add("display-none");
+  document.getElementById("payment_section").classList.remove("display-none");
+  document.getElementById("account_informations").classList.remove("display-none");
 }
 
 function enableDiscount(){
