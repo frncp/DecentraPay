@@ -8,7 +8,8 @@
   <link rel="stylesheet" href="style.css">
   <script type="text/javascript" src="script.js"></script>
   <title>DecentraPay</title>
-  <script src="./dist/web3.min.js"></script>
+  <script src="https://unpkg.com/web3@latest/dist/web3.min.js"></script>
+
 </head>
 
 <body>
@@ -29,7 +30,7 @@
 	<p>Please install a provider like <a href="https://metamask.io/">MetaMask</a> to continue.</p>
   </div>
 
-  <div id="provider_section" class="display-none">
+  <div id="provider_section">
   <p class="intro-title">Connect to your provider to start using the app</p>
   <button id="provider_connection_button" class="connection-button" onclick="InizializeConnection()">Connect</button>
  </div>
