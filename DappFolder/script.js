@@ -79,7 +79,6 @@ window.ethereum.on('accountsChanged',function (accounts) {
 function Connect(result) {
   getCredit(DecentraPayContract,result);
   goToPayment();
-  document.getElementById("main-body").classList.remove("display-none");
   }
 
 ethereum.on('chainChanged', (chainId) => {
