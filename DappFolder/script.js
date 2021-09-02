@@ -12,6 +12,7 @@ window.onload = function(){
      InizializeConnection();
 }
 
+// Checks if Ethereum is available on the browser
 function isEthereumProviderInstalled() {
   if (typeof window.ethereum !== 'undefined') {
   web3 = new Web3(window.ethereum);
@@ -23,13 +24,10 @@ function isEthereumProviderInstalled() {
   }
 }
 
-// Checks if Ethereum is available on the browser
 function InizializeConnection(){
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
-  if(!window.etjhereum.isConnected()){
-    console.log("logged");
-   // Connect();
-}}
+  web3.eth.net.isListening().then(function(){
+    Connect();})}
 
 async function getAddress(){
   try{
@@ -52,19 +50,8 @@ async function getAddress(){
 
 async function getCredit(DecentraPayContract,x){
   Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
-  console.log("Storage:" + Storage);
   document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
   return Storage;
-}
-
-async function GetStorageBalance(){
-  var val = await DecentraPayContract.methods.getStorageContractBalance().call({from:account});
-  console.log("Storage contract Balance " + web3.utils.fromWei(val,'ether'));
-}
-
-async function GetInterfaceBalance(){
-  var val = await DecentraPayContract.methods.getBalance().call({from:account});
-  console.log("Interface contract Balance " + web3.utils.fromWei(val,'ether'));
 }
 
 async function PayWithoutDiscount(x,AmountToPay){
@@ -78,53 +65,20 @@ async function PayWithDiscount(x,AmountToPay,DiscountRequest){
   }
 }
 window.ethereum.on('accountsChanged',function (accounts) {
-  console.log(accounts);
   if(accounts.length == 0){
-    document.getElementById("intro_section").classList.remove("display-none");
+    document.getElementById("provider_section").classList.remove("display-none");
     document.getElementById("payment_section").classList.add("display-none")
     document.getElementById("account_informations").classList.add("display-none")
   }else{
-    document.getElementById("intro_section").classList.add("display-none");
+    document.getElementById("provider_section").classList.add("display-none");
   getAddress()}
 });
-
-var Wallet = {
-   address : undefined,
-   connect : async function() {
-		try{
-  var accounts = await ethereum.request({method: 'eth_requestAccounts'});
-  } catch(err) {
-    switch(err.code){
-      case -32002: alert("already active");break;
-      case 4001: alert("Connection Refused");break;
-    }
-    return err.code
-  }
-   if(accounts.length != 0){
-  var address = accounts[0];
-  this.address = address
-  return 0
-  }
-},
-
-  getAddress : function() {
-	return this.address
-   },
-  
-  getBalance : function() {
-      return this.balance
-  }
-
-}
-
 
 async function Connect() {
   var result = await getAddress();
   if(result){
   getCredit(DecentraPayContract,result);
   goToPayment();
-  GetStorageBalance();
-  GetInterfaceBalance();
   }
 }
 
@@ -137,7 +91,7 @@ ethereum.on('chainChanged', (chainId) => {
 function goToPayment() {
   document.getElementById("payment_section").classList.remove("display-none")
   document.getElementById("account_informations").classList.remove("display-none")
-  document.getElementById("intro_section").classList.add("display-none");
+  document.getElementById("provider_section").classList.add("display-none");
 }
 
 function enableDiscount(){
@@ -161,20 +115,38 @@ function adaptMinValueToUnit(){
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "gwei":
-      console.log("gwei");
       pay.setAttribute("min",10000000);
       AdaptDiscount.setAttribute("min",10000000)
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
+<<<<<<< HEAD
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
+=======
+      if(selectedOption != OldSelection && pay.value != 0){
+          var temp = web3.utils.toWei(pay.value,OldSelection);
+          pay.value = web3.utils.fromWei(temp,selectedOption);
+        if(AdaptDiscount.value != 0){
+          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
+          AdaptDiscount.value = web3.utils.fromWei(Val,selectedOption);
+        }}
+>>>>>>> 1ba481df36cd8bcac02959c244855b0ba2c4ae89
       break;
     case "ether":
       pay.setAttribute("min",0.01);
       AdaptDiscount.setAttribute("min",0.01)
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
+<<<<<<< HEAD
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
+=======
+      if(selectedOption != OldSelection && pay.value != 0){
+        var temp = web3.utils.toWei(pay.value,OldSelection);
+        pay.value = web3.utils.fromWei(temp,selectedOption);
+        if(AdaptDiscount.value != 0){
+          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
+          AdaptDiscount.value = web3.utils.fromWei(Val);
+        }}
+>>>>>>> 1ba481df36cd8bcac02959c244855b0ba2c4ae89
       break;
   }
-  console.log("arrived");
   OldSelection = selectedOption;
 }
 
@@ -207,6 +179,36 @@ function ConvertToWei(amount,selectedOption){
   return web3.utils.toWei(amount,selectedOption);
 }
 
+
+// TODO : t cos
+var Wallet = {
+  address : undefined,
+  connect : async function() {
+   try{
+ var accounts = await ethereum.request({method: 'eth_requestAccounts'});
+ } catch(err) {
+   switch(err.code){
+     case -32002: alert("already active");break;
+     case 4001: alert("Connection Refused");break;
+   }
+   return err.code
+ }
+  if(accounts.length != 0){
+ var address = accounts[0];
+ this.address = address
+ return 0
+ }
+},
+
+ getAddress : function() {
+ return this.address
+  },
+
+ getBalance : function() {
+     return this.balance
+ }
+
+}
 
 function ReturnJSON(){
 
