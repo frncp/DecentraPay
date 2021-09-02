@@ -1,7 +1,7 @@
 // CHECK IF WALLET IS AVAILABLE
 var account;
 var Storage;
-var ContractAddress = "0x2df7bd73910cd9313717d8b80373303d9624836f";
+var ContractAddress = "0xf0f7d0541d7473a136245914d6b9797829eb7725";
 var abi = ReturnJSON();
 var DecentraPayContract;
 var accounts;
@@ -27,16 +27,18 @@ function isEthereumProviderInstalled() {
 async function InizializeConnection() {
   DecentraPayContract = new web3.eth.Contract(abi, ContractAddress);
   var result = await getAddress();
-  if (result != undefined) {
-    Connect(result);
-  }
+  DecentraPayContract.events.Paysent({},{}).on('data', function(){
+    getCredit(DecentraPayContract,result);
+})
+  web3.eth.getAccounts().then(function(vas){
+    if(vas)
+      Connect(result);
+  });
 }
 
 async function getAddress() {
   try {
-    accounts = await ethereum.request({
-      method: 'eth_requestAccounts'
-    });
+    accounts = await web3.eth.getAccounts();
   } catch (err) {
     switch (err.code) {
       case -32002:
@@ -103,12 +105,6 @@ function Connect(result) {
   getCredit(DecentraPayContract, result);
   goToPayment();
 }
-
-ethereum.on('chainChanged', (chainId) => {
-  if (chainId != 3) {
-    alert("Connect to Ropsten, please");
-  }
-});
 
 function goToPayment() {
   document.getElementById("payment_section").classList.remove("display-none")
@@ -228,32 +224,44 @@ var Wallet = {
 
 function ReturnJSON() {
 
-  return (JSON.parse(JSON.stringify([{
-      "inputs": [{
-        "internalType": "address",
-        "name": "_StorageAddress",
-        "type": "address"
-      }],
+  return (JSON.parse(JSON.stringify([
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_StorageAddress",
+          "type": "address"
+        },
+        {
+          "internalType": "uint256",
+          "name": "_discount",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "nonpayable",
       "type": "constructor"
     },
     {
       "anonymous": false,
-      "inputs": [{
-        "indexed": false,
-        "internalType": "uint256",
-        "name": "value",
-        "type": "uint256"
-      }],
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
       "name": "Paysent",
       "type": "event"
     },
     {
-      "inputs": [{
-        "internalType": "uint256",
-        "name": "_discount",
-        "type": "uint256"
-      }],
+      "inputs": [
+        {
+          "internalType": "uint256",
+          "name": "_discount",
+          "type": "uint256"
+        }
+      ],
       "name": "SetDiscount",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -262,71 +270,84 @@ function ReturnJSON() {
     {
       "inputs": [],
       "name": "getBalance",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "getCurrentDiscount",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "address",
-        "name": "_address",
-        "type": "address"
-      }],
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
       "name": "getMyCredit",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "getStorageContract",
-      "outputs": [{
-        "internalType": "address",
-        "name": "",
-        "type": "address"
-      }],
+      "outputs": [
+        {
+          "internalType": "address",
+          "name": "",
+          "type": "address"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "getStorageContractBalance",
-      "outputs": [{
-        "internalType": "uint256",
-        "name": "",
-        "type": "uint256"
-      }],
+      "outputs": [
+        {
+          "internalType": "uint256",
+          "name": "",
+          "type": "uint256"
+        }
+      ],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [{
+      "inputs": [
+        {
           "internalType": "address payable",
           "name": "_address",
           "type": "address"
         },
         {
           "internalType": "uint256",
-          "name": "RequestedDiscount",
+          "name": "_RequestedDiscount",
           "type": "uint256"
         }
       ],
@@ -336,33 +357,39 @@ function ReturnJSON() {
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "address payable",
-        "name": "_address",
-        "type": "address"
-      }],
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
       "name": "payRequireDiscount",
       "outputs": [],
       "stateMutability": "payable",
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "address payable",
-        "name": "_address",
-        "type": "address"
-      }],
+      "inputs": [
+        {
+          "internalType": "address payable",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
       "name": "setOwner",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [{
-        "internalType": "address",
-        "name": "_address",
-        "type": "address"
-      }],
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_address",
+          "type": "address"
+        }
+      ],
       "name": "setStorageContract",
       "outputs": [],
       "stateMutability": "nonpayable",
