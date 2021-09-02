@@ -26,7 +26,7 @@ function isEthereumProviderInstalled() {
 // Checks if Ethereum is available on the browser
 function InizializeConnection(){
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
-  if(!window.ethereum.isConnected()){
+  if(!window.etjhereum.isConnected()){
     console.log("logged");
    // Connect();
 }}
@@ -158,43 +158,34 @@ function adaptMinValueToUnit(){
       pay.setAttribute("min",10000000000000000);
       AdaptDiscount.setAttribute("min",10000000000000000)
       AdaptDiscount.setAttribute("max",Storage);
-      if(selectedOption != OldSelection && pay.value != 0){
-          pay.value = web3.utils.toWei(pay.value,OldSelection);
-          if(AdaptDiscount.value != 0 )
-              AdaptDiscount.value = web3.utils.toWei(AdaptDiscount.value,OldSelection);
-      }
+      convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "gwei":
       console.log("gwei");
       pay.setAttribute("min",10000000);
       AdaptDiscount.setAttribute("min",10000000)
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
-      if(selectedOption != OldSelection && pay.value != 0){
-          console.log("old" + OldSelection);
-          var temp = web3.utils.toWei(pay.value,OldSelection);
-          pay.value = web3.utils.fromWei(temp,selectedOption);
-        if(AdaptDiscount.value != 0){
-          console.log("Discount:" + AdaptDiscount.value);
-          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
-          AdaptDiscount.value = web3.utils.fromWei(Val,selectedOption);
-        }}
+      convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "ether":
       pay.setAttribute("min",0.01);
       AdaptDiscount.setAttribute("min",0.01)
       AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
-      if(selectedOption != OldSelection && pay.value != 0){
-        var temp = web3.utils.toWei(pay.value,OldSelection);
-        pay.value = web3.utils.fromWei(temp,selectedOption);
-        if(AdaptDiscount.value != 0){
-          console.log("Discount:" + AdaptDiscount.value);
-          var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
-          AdaptDiscount.value = web3.utils.fromWei(Val);
-        }}
+      convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
   }
   console.log("arrived");
   OldSelection = selectedOption;
+}
+
+function convertSelectedUnit(current_unit, previous_unit, amount_input, discount_input) {
+   if((current_unit != previous_unit) && amount_input.value != 0){
+        var conversion = web3.utils.toWei(amount_input.value,previous_unit)
+        amount_input.value = web3.utils.fromWei(conversion,current_unit)
+        if(discount_input.value != 0){
+          var discount_conversion = web3.utils.toWei(discount_input.value,previous_unit)
+          discount_input.value = web3.utils.fromWei(Val)
+        }}
 }
 
 function SubmitForm(){
