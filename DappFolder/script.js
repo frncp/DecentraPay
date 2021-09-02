@@ -1,9 +1,9 @@
 // CHECK IF WALLET IS AVAILABLE
 var OldSelection = 'ether';
 
-window.onload = function(){
-  if(isEthereumProviderInstalled())
-     InizializeConnection();
+window.onload = function () {
+  if (isEthereumProviderInstalled())
+    InizializeConnection();
 }
 
 // Wallet
@@ -62,12 +62,12 @@ const Contract = {
 // Checks if Ethereum is available on the browser
 function isEthereumProviderInstalled() {
   if (typeof window.ethereum !== 'undefined') {
-  web3 = new Web3(window.ethereum);
-  return true
+    web3 = new Web3(window.ethereum);
+    return true
   } else {
-  web3 = new Web3('http://localhost:8545');
- document.getElementById("provider_installation_prompt").classList.remove("display-none");
-  return false
+    web3 = new Web3('http://localhost:8545');
+    document.getElementById("provider_installation_prompt").classList.remove("display-none");
+    return false
   }
 }
 
@@ -106,26 +106,27 @@ function Connect() {
   }})
 }
 
+
 function goToPayment() {
   document.getElementById("payment_section").classList.remove("display-none")
   document.getElementById("account_informations").classList.remove("display-none")
   document.getElementById("provider_section").classList.add("display-none");
 }
 
-function enableDiscount(){
+function enableDiscount() {
   var checkbox = document.getElementById("discount_checkbox")
   var textbox = document.getElementById("discount_amount_input")
   textbox.disabled = checkbox.checked ? false : true;
-  if(textbox.disabled){
+  if (textbox.disabled) {
     textbox.value = "0"
   }
 }
 
-function adaptMinValueToUnit(){
+function adaptMinValueToUnit() {
   var selectedOption = document.getElementById("unit_selection_list").value;
   var pay = document.getElementById("amount_input");
   var AdaptDiscount = document.getElementById("discount_amount_input");
-  switch(selectedOption){
+  switch (selectedOption) {
     case "wei":
       pay.setAttribute("min",10000000000000000);
       AdaptDiscount.setAttribute("min",10000000000000000)
@@ -147,6 +148,7 @@ function adaptMinValueToUnit(){
   }
   OldSelection = selectedOption;
 }
+
 
 function convertSelectedUnit(current_unit, previous_unit, amount_input, discount_input) {
    if((current_unit != previous_unit) && amount_input.value != 0){
@@ -199,44 +201,36 @@ ethereum.on('chainChanged', (chainId) => {
 });
 
 
-
 /* START OF ABI */
 
-function ReturnJSON(){
+function ReturnJSON() {
 
-	return (JSON.parse(JSON.stringify([
-    {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_StorageAddress",
-          "type": "address"
-        }
-      ],
+  return (JSON.parse(JSON.stringify([{
+      "inputs": [{
+        "internalType": "address",
+        "name": "_StorageAddress",
+        "type": "address"
+      }],
       "stateMutability": "nonpayable",
       "type": "constructor"
     },
     {
       "anonymous": false,
-      "inputs": [
-        {
-          "indexed": false,
-          "internalType": "uint256",
-          "name": "value",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "indexed": false,
+        "internalType": "uint256",
+        "name": "value",
+        "type": "uint256"
+      }],
       "name": "Paysent",
       "type": "event"
     },
     {
-      "inputs": [
-        {
-          "internalType": "uint256",
-          "name": "_discount",
-          "type": "uint256"
-        }
-      ],
+      "inputs": [{
+        "internalType": "uint256",
+        "name": "_discount",
+        "type": "uint256"
+      }],
       "name": "SetDiscount",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -245,77 +239,64 @@ function ReturnJSON(){
     {
       "inputs": [],
       "name": "getBalance",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "getCurrentDiscount",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_address",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }],
       "name": "getMyCredit",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "getStorageContract",
-      "outputs": [
-        {
-          "internalType": "address",
-          "name": "",
-          "type": "address"
-        }
-      ],
+      "outputs": [{
+        "internalType": "address",
+        "name": "",
+        "type": "address"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
       "inputs": [],
       "name": "getStorageContractBalance",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
+      "outputs": [{
+        "internalType": "uint256",
+        "name": "",
+        "type": "uint256"
+      }],
       "stateMutability": "view",
       "type": "function"
     },
     {
-      "inputs": [
-        {
+      "inputs": [{
           "internalType": "address payable",
           "name": "_address",
           "type": "address"
@@ -332,39 +313,33 @@ function ReturnJSON(){
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address payable",
-          "name": "_address",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address payable",
+        "name": "_address",
+        "type": "address"
+      }],
       "name": "payRequireDiscount",
       "outputs": [],
       "stateMutability": "payable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address payable",
-          "name": "_address",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address payable",
+        "name": "_address",
+        "type": "address"
+      }],
       "name": "setOwner",
       "outputs": [],
       "stateMutability": "nonpayable",
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_address",
-          "type": "address"
-        }
-      ],
+      "inputs": [{
+        "internalType": "address",
+        "name": "_address",
+        "type": "address"
+      }],
       "name": "setStorageContract",
       "outputs": [],
       "stateMutability": "nonpayable",
@@ -381,6 +356,5 @@ function ReturnJSON(){
       "stateMutability": "payable",
       "type": "receive"
     }
-  ]
-   )));
+  ])));
 }
