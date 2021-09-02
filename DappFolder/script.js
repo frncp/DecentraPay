@@ -52,8 +52,11 @@ async function getAddress(){
 
 async function getCredit(DecentraPayContract,x){
   Storage = await DecentraPayContract.methods.getMyCredit(x).call({from: x});
-  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
+  if(typeof Storage != undefined){
   return Storage;
+  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei(Storage,"ether") + " ether";
+  }else{
+  return 0;}
 }
 
 async function PayWithoutDiscount(x,AmountToPay){

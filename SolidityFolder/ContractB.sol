@@ -7,26 +7,25 @@ mapping(address => uint256) AddrMap;
 mapping(address => bool) IfExistAddress;
 address[] private Accounts;
 
-address private bAddress;
 
 event PaymentDone(address sender,uint value);
 
 receive() external payable{}
 
-function useDiscountAndDelete(address payable _address,uint DiscountRequest) external payable{
-    require(DiscountRequest <= AddrMap[_address],"Balance not sufficent");
-    require((DiscountRequest/10000)*10000 == DiscountRequest);
-    AddrMap[_address] -= DiscountRequest;
-    (bool sent,) = _address.call{value: DiscountRequest, gas: 2300}("");
+function useDiscountAndDelete(address payable _address,uint _DiscountRequest) external payable{
+    require(_DiscountRequest <= AddrMap[_address],"Balance not sufficent");
+    require((_DiscountRequest/10000)*10000 == _DiscountRequest);
+    AddrMap[_address] -= _DiscountRequest;
+    (bool sent,) = _address.call{value: _DiscountRequest, gas: 2300}("");
     require(sent,"Transaction Failed");
     emit PaymentDone(msg.sender,msg.value);
 
 }
 
 
-function payAndRequestDiscount(address _address,uint256 DiscountRequest) external payable{
+function payAndRequestDiscount(address _address,uint256 _DiscountRequest) external payable{
     addAddress(_address);
-    addDiscount(_address,DiscountRequest);
+    addDiscount(_address,_DiscountRequest);
 }
 
 
