@@ -81,10 +81,10 @@ window.ethereum.on('accountsChanged',function (accounts) {
   console.log(accounts);
   if(accounts.length == 0){
     document.getElementById("intro_section").classList.remove("display-none");
-    document.getElementById("provider_section").classList.remove("display-none");
-    document.getElementById("payment_section").classList.add("display-none");
-    document.getElementById("account_informations").classList.remove("display-none");
+    document.getElementById("payment_section").classList.add("display-none")
+    document.getElementById("account_informations").classList.add("display-none")
   }else{
+    document.getElementById("intro_section").classList.add("display-none");
   getAddress()}
 });
 
@@ -135,10 +135,9 @@ ethereum.on('chainChanged', (chainId) => {
 });
 
 function goToPayment() {
+  document.getElementById("payment_section").classList.remove("display-none")
+  document.getElementById("account_informations").classList.remove("display-none")
   document.getElementById("intro_section").classList.add("display-none");
-  document.getElementById("provider_section").classList.add("display-none");
-  document.getElementById("payment_section").classList.remove("display-none");
-  document.getElementById("account_informations").classList.remove("display-none");
 }
 
 function enableDiscount(){
@@ -190,7 +189,7 @@ function adaptMinValueToUnit(){
         if(AdaptDiscount.value != 0){
           console.log("Discount:" + AdaptDiscount.value);
           var Val = web3.utils.toWei(AdaptDiscount.value,OldSelection)
-          AdaptDiscount.value = web3.utils.fromWei(Val,selectedOption);
+          AdaptDiscount.value = web3.utils.fromWei(Val);
         }}
       break;
   }
@@ -216,6 +215,7 @@ function SubmitForm(){
 function ConvertToWei(amount,selectedOption){
   return web3.utils.toWei(amount,selectedOption);
 }
+
 
 function ReturnJSON(){
 
