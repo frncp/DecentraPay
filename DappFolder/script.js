@@ -8,22 +8,27 @@ var accounts;
 var OldSelection = 'ether';
 
 window.onload = function(){
-  InizializeConnection();
+  if(isEthereumProviderInstalled())
+     InizializeConnection();
+}
+
+function isEthereumProviderInstalled() {
+  if (typeof window.ethereum !== 'undefined') {
+  web3 = new Web3(window.ethereum);
+  return true
+  } else {
+  web3 = new Web3('http://localhost:8545');
+ document.getElementById("provider_installation_prompt").classList.remove("display-none");
+  return false
+  }
 }
 
 // Checks if Ethereum is available on the browser
 function InizializeConnection(){
-  if (typeof window.ethereum !== 'undefined') {
-  web3 = new Web3(window.ethereum);
-  //document.getElementById("provider_installation_prompt").classList.remove("display-none");
-  }else{
-  web3 = new Web3('http://localhost:8545');
-  }
   DecentraPayContract = new web3.eth.Contract(abi,ContractAddress);
-  console.log("arrived");
   if(!window.ethereum.isConnected()){
     console.log("logged");
-    Connect();
+   // Connect();
 }}
 
 async function getAddress(){
@@ -82,6 +87,36 @@ window.ethereum.on('accountsChanged',function (accounts) {
   }else{
   getAddress()}
 });
+
+var Wallet = {
+   address : undefined,
+   connect : async function() {
+		try{
+  var accounts = await ethereum.request({method: 'eth_requestAccounts'});
+  } catch(err) {
+    switch(err.code){
+      case -32002: alert("already active");break;
+      case 4001: alert("Connection Refused");break;
+    }
+    return err.code
+  }
+   if(accounts.length != 0){
+  var address = accounts[0];
+  this.address = address
+  return 0
+  }
+},
+
+  getAddress : function() {
+	return this.address
+   },
+  
+  getBalance : function() {
+      return this.balance
+  }
+
+}
+
 
 async function Connect() {
   var result = await getAddress();
