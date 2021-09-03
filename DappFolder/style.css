@@ -1,47 +1,134 @@
 /* CSS RESET */
 
-html, body, div, span, applet, object, iframe,
-h1, h2, h3, h4, h5, h6, p, blockquote, pre,
-a, abbr, acronym, address, big, cite, code,
-del, dfn, em, img, ins, kbd, q, s, samp,
-small, strike, strong, sub, sup, tt, var,
-b, u, i, center,
-dl, dt, dd, ol, ul, li,
-fieldset, form, label, legend,
-table, caption, tbody, tfoot, thead, tr, th, td,
-article, aside, canvas, details, embed, 
-figure, figcaption, footer, header, hgroup, 
-menu, nav, output, ruby, section, summary,
-time, mark, audio, video {
-	margin: 0;
-	padding: 0;
-	border: 0;
-	font-size: 100%;
-	font: inherit;
-	vertical-align: baseline;
+html,
+body,
+div,
+span,
+applet,
+object,
+iframe,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+blockquote,
+pre,
+a,
+abbr,
+acronym,
+address,
+big,
+cite,
+code,
+del,
+dfn,
+em,
+img,
+ins,
+kbd,
+q,
+s,
+samp,
+small,
+strike,
+strong,
+sub,
+sup,
+tt,
+var,
+b,
+u,
+i,
+center,
+dl,
+dt,
+dd,
+ol,
+ul,
+li,
+fieldset,
+form,
+label,
+legend,
+table,
+caption,
+tbody,
+tfoot,
+thead,
+tr,
+th,
+td,
+article,
+aside,
+canvas,
+details,
+embed,
+figure,
+figcaption,
+footer,
+header,
+hgroup,
+menu,
+nav,
+output,
+ruby,
+section,
+summary,
+time,
+mark,
+audio,
+video {
+  margin: 0;
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  font: inherit;
+  vertical-align: baseline;
 }
+
 /* HTML5 display-role reset for older browsers */
-article, aside, details, figcaption, figure, 
-footer, header, hgroup, menu, nav, section {
-	display: block;
+article,
+aside,
+details,
+figcaption,
+figure,
+footer,
+header,
+hgroup,
+menu,
+nav,
+section {
+  display: block;
 }
+
 body {
-	line-height: 1;
+  line-height: 1;
 }
-ol, ul {
-	list-style: none;
+
+ol,
+ul {
+  list-style: none;
 }
-blockquote, q {
-	quotes: none;
+
+blockquote,
+q {
+  quotes: none;
 }
-blockquote:before, blockquote:after,
-q:before, q:after {
-	content: '';
-	content: none;
+
+blockquote:before,
+blockquote:after,
+q:before,
+q:after {
+  content: '';
+  content: none;
 }
+
 table {
-	border-collapse: collapse;
-	border-spacing: 0;
+  border-collapse: collapse;
+  border-spacing: 0;
 }
 
 
@@ -56,13 +143,13 @@ table {
   width: 100%;
 }
 
-.welcome-section h1{
+.welcome-section h1 {
   font-size: 2.8em;
   font-weight: bold;
-  margin-bottom: 1.5rem;  
+  margin-bottom: 1.5rem;
 }
 
-.welcome-section p{
+.welcome-section p {
   margin-bottom: 1rem;
   font-size: 1.3rem;
 }
@@ -79,11 +166,11 @@ table {
 }
 
 @media screen and (max-width: 800px) {
- .main-body {
+  .main-body {
     border-left: none;
     border-right: none;
     border-radius: 0;
- }
+  }
 
 }
 
@@ -102,7 +189,7 @@ table {
   padding: 1.2em;
 }
 
-.payment-section{
+.payment-section {
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -128,41 +215,41 @@ table {
 }
 
 .input-large:focus {
- border-bottom: 2px solid black;
- outline: none;
- background-color: #F0FFFF;
+  border-bottom: 2px solid black;
+  outline: none;
+  background-color: #F0FFFF;
 }
 
 .input-large:disabled {
- background: transparent;
- border-bottom: 2px solid #E7E7D0;
- color: #E7E7D0;
+  background: transparent;
+  border-bottom: 2px solid #E7E7D0;
+  color: #E7E7D0;
 }
 
 .discount-section {
- margin-top: 2em;
- border-top: 1px dotted gray;
- padding-top: 2em;
+  margin-top: 2em;
+  border-top: 1px dotted gray;
+  padding-top: 2em;
 }
 
-#discount_amount_input{
+#discount_amount_input {
   width: 80%;
   display: block;
-  margin:auto;
+  margin: auto;
 }
 
 footer {
   text-align: center;
 }
 
-footer p{
+footer p {
   font-size: 20px;
 }
 
-.payment-button{
+.payment-button {
   width: 100%;
   height: 40px;
-  padding:0.25rem 0.25rem 0.25rem 0.25rem;
+  padding: 0.25rem 0.25rem 0.25rem 0.25rem;
   font-size: 24px;
   border-radius: 2px;
   background: #37AF65;
@@ -176,19 +263,19 @@ footer p{
 
 
 
-.payment-button:hover{
+.payment-button:hover {
   background: rgb(28, 102, 56);
   border: 1px solid white;
 }
 
-.connection-button{
+.connection-button {
   background: #9B3624;
   height: 40px;
   width: 100%;
-  padding:0.25rem 0.25rem 0.25rem 0.25rem;
+  padding: 0.25rem 0.25rem 0.25rem 0.25rem;
   font-size: 24px;
   border-radius: 2px;
-  color:white;
+  color: white;
   border: none;
   transition-duration: 0.4s;
   min-width: 200px;
@@ -196,23 +283,23 @@ footer p{
   margin-top: 2em;
 }
 
-.connection-button:hover{
+.connection-button:hover {
   background: #5c2218;
   border: 1px solid white;
 }
 
-body{
+body {
   height: 100vh;
 }
 
-#payment_info_section{
+#payment_info_section {
   display: flex;
   flex-direction: row;
   justify-content: center;
   padding: 5px;
 }
 
-#amount_input{
+#amount_input {
   flex-basis: 70%;
 }
 
