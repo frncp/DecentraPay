@@ -52,12 +52,18 @@ document.getElementById('error_accept_pending').classList.add('display-none');do
 
 // Contract
 const Contract = {
- address : "0x2df7bd73910cd9313717d8b80373303d9624836f",
+ address : "0xf53b85d2854edcdb5d9677fab0ba215d33eac899",
  abi : ReturnJSON(),
  contract : undefined,
  credit : undefined,
  deploy : function() {
      this.contract = new web3.eth.Contract(this.abi,this.address)
+     this.contract.events.Paysent({},{}).on('data', function(){
+      getCredit();
+  })
+  this.contract.events.PayDiscount({},{}).on('data', function(){
+    getCredit();
+})
  },
  fetchCredit : async function(wallet) {
     if (this.contract)
@@ -80,6 +86,7 @@ function isEthereumProviderInstalled() {
 function InizializeConnection(){
   Contract.deploy()
   web3.eth.net.isListening().then(function(){
+    console.log("connect");
     Connect();})}
 
 function getAddress(){ 
@@ -96,8 +103,8 @@ async function PayWithoutDiscount(x,AmountToPay){
 }
 
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
-  if(Contract.credit >= DiscountRequest){
-  var AmountToPay = AmountToPay - DiscountRequest;
+  if(Number(Contract.credit) >= Number(DiscountRequest)){
+  AmountToPay = AmountToPay - DiscountRequest;
   await Contract.contract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
   }
 }
@@ -106,7 +113,7 @@ async function PayWithDiscount(x,AmountToPay,DiscountRequest){
 function Connect() {
   Wallet.connect().then( function() {
   if(Wallet.isThereAnAddress()){
-  getAddress()
+  getAddress();
   getCredit();
   goToPayment();
   }})
@@ -131,23 +138,24 @@ function adaptMinValueToUnit() {
   var selectedOption = document.getElementById("unit_selection_list").value;
   var pay = document.getElementById("amount_input");
   var AdaptDiscount = document.getElementById("discount_amount_input");
+  
   switch (selectedOption) {
     case "wei":
       pay.setAttribute("min",10000000000000000);
       AdaptDiscount.setAttribute("min",10000000000000000)
-     //TODO: fix -> AdaptDiscount.setAttribute("max",Storage);
+      AdaptDiscount.setAttribute("max",Storage);
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "gwei":
       pay.setAttribute("min",10000000);
       AdaptDiscount.setAttribute("min",10000000)
-      //TODO: fix --> AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
+      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "ether":
       pay.setAttribute("min",0.01);
       AdaptDiscount.setAttribute("min",0.01)
-      //TODO: fix --> AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
+      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
   }
@@ -174,9 +182,9 @@ function SubmitForm(){
   payment_amount = web3.utils.toWei(payment_amount,selectedOption);
   if(discount_checkbox.checked && discount!== undefined && discount !== 0){
       discount = web3.utils.toWei(discount,selectedOption);
-      PayWithDiscount(account,payment_amount,discount);
+      PayWithDiscount(Wallet.address,payment_amount,discount);
   }else{
-    PayWithoutDiscount(account,payment_amount);
+    PayWithoutDiscount(Wallet.address,payment_amount);
   }
 }
 
@@ -202,7 +210,7 @@ window.ethereum.on('accountsChanged',function (accounts) {
 
 // Network switch
 ethereum.on('chainChanged', (chainId) => {
-  location.reload()
+  
 });
 
 
@@ -226,6 +234,19 @@ function ReturnJSON() {
       ],
       "stateMutability": "nonpayable",
       "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": false,
+          "internalType": "uint256",
+          "name": "value",
+          "type": "uint256"
+        }
+      ],
+      "name": "PayDiscount",
+      "type": "event"
     },
     {
       "anonymous": false,

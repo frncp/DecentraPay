@@ -12,6 +12,8 @@ interface ContractB{
 contract contractA{
     
     event Paysent(uint256 value);
+
+    event PayDiscount(uint value);
     
     address private Storage_address;
     
@@ -38,6 +40,7 @@ contract contractA{
     
     function payAndApplyDiscount(address payable _address,uint _RequestedDiscount) validAddress(_address) amountAboveZero(_RequestedDiscount) amountAboveZero(msg.value) ValidDiscountRequest(msg.sender,_RequestedDiscount) external payable{
         StorageContract.useDiscountAndDelete(_address,_RequestedDiscount);
+        emit PayDiscount(msg.value - _RequestedDiscount);
     }
     
     function getMyCredit(address _address) public view returns(uint){
