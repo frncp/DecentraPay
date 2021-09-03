@@ -1,10 +1,4 @@
 // CHECK IF WALLET IS AVAILABLE
-var account;
-var Storage;
-var ContractAddress = "0xf0f7d0541d7473a136245914d6b9797829eb7725";
-var abi = ReturnJSON();
-var DecentraPayContract;
-var accounts;
 var OldSelection = 'ether';
 
 window.onload = function () {
@@ -18,7 +12,7 @@ var Wallet = {
   address : undefined,
   connect : async function() {
    try{
- var accounts =  await web3.eth.getAccounts();
+ var accounts =  await ethereum.request({method: 'eth_requestAccounts'});
  } catch(err) {
    switch(err.code){
      case -32002: document.getElementById('error_refused_connection').classList.add('display-none');document.getElementById('error_accept_pending').classList.remove('display-none');break;
@@ -28,6 +22,7 @@ document.getElementById('error_accept_pending').classList.add('display-none');do
    return err.code
  }
  if(accounts.length != 0){
+   console.log("Add");
   let address = accounts[0];
   this.address = address
  } else {
@@ -45,14 +40,14 @@ document.getElementById('error_accept_pending').classList.add('display-none');do
  },
  
  isThereAnAddress : function() {
-     return (typeof address != undefined) ? true : false
+     return (this.address != undefined) ? true : false
  }
 }
 
 
 // Contract
 const Contract = {
- address : "0xf53b85d2854edcdb5d9677fab0ba215d33eac899",
+ address : "0x741247eee7cdf53e89caec14cff9a15172decddd",
  abi : ReturnJSON(),
  contract : undefined,
  credit : undefined,
@@ -85,9 +80,8 @@ function isEthereumProviderInstalled() {
 
 function InizializeConnection(){
   Contract.deploy()
-  web3.eth.getAccounts().then(function(){
-    console.log("connect");
-    Connect();})}
+  Connect();
+}
 
 function getAddress(){ 
   document.getElementById("address_information_web3").innerHTML = Wallet.address;
@@ -113,9 +107,9 @@ async function PayWithDiscount(x,AmountToPay,DiscountRequest){
 function Connect() {
   Wallet.connect().then( function() {
   if(Wallet.isThereAnAddress()){
+    goToPayment();
   getAddress();
   getCredit();
-  goToPayment();
   }})
 }
 
@@ -143,19 +137,19 @@ function adaptMinValueToUnit() {
     case "wei":
       pay.setAttribute("min",10000000000000000);
       AdaptDiscount.setAttribute("min",10000000000000000)
-      AdaptDiscount.setAttribute("max",Storage);
+      AdaptDiscount.setAttribute("max",Contract.credit);
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "gwei":
       pay.setAttribute("min",10000000);
       AdaptDiscount.setAttribute("min",10000000)
-      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"gwei"));
+      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Contract.credit,"gwei"));
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
     case "ether":
       pay.setAttribute("min",0.01);
       AdaptDiscount.setAttribute("min",0.01)
-      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Storage,"ether"));
+      AdaptDiscount.setAttribute("max",web3.utils.fromWei(Contract.credit,"ether"));
       convertSelectedUnit(selectedOption, OldSelection, pay, AdaptDiscount)
       break;
   }

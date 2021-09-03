@@ -135,6 +135,12 @@ table {
  padding-top: 2em;
 }
 
+#discount_amount_input{
+  width: 80%;
+  display: block;
+  margin:auto;
+}
+
 footer {
   text-align: center;
 }

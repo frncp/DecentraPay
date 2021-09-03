@@ -14,7 +14,7 @@ receive() external payable{}
 
 function useDiscountAndDelete(address payable _address,uint _DiscountRequest) external payable{
     require(_DiscountRequest <= AddrMap[_address],"Balance not sufficent");
-    require((_DiscountRequest/10000)*10000 == _DiscountRequest);
+    //require((_DiscountRequest/10000)*10000 == _DiscountRequest);
     AddrMap[_address] -= _DiscountRequest;
     (bool sent,) = _address.call{value: _DiscountRequest, gas: 2300}("");
     require(sent,"Transaction Failed");
