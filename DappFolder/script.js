@@ -7,7 +7,6 @@ window.onload = function () {
 }
 
 // Wallet
-// TODO : Object
 var Wallet = {
   address : undefined,
   connect : async function() {
@@ -80,6 +79,7 @@ function isEthereumProviderInstalled() {
 
 function InizializeConnection(){
   Contract.deploy()
+  document.getElementById('provider_section').classList.remove('display-none')
   Connect();
 }
 
@@ -99,7 +99,11 @@ async function PayWithoutDiscount(x,AmountToPay){
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
   if(Number(Contract.credit) >= Number(DiscountRequest)){
   AmountToPay = AmountToPay - DiscountRequest;
+  try {
   await Contract.contract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
+  } catch (err) {
+     console.log(err)
+  }
   }
 }
 
