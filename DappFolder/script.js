@@ -210,7 +210,9 @@ window.ethereum.on('accountsChanged',function (accounts) {
 
 // Network switch
 ethereum.on('chainChanged', (chainId) => {
-  
+    Wallet.connect();
+    getAddress();
+    getCredit();
 });
 
 
