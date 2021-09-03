@@ -18,7 +18,7 @@ var Wallet = {
   address : undefined,
   connect : async function() {
    try{
- var accounts = await ethereum.request({method: 'eth_requestAccounts'});
+ var accounts =  await web3.eth.getAccounts();
  } catch(err) {
    switch(err.code){
      case -32002: document.getElementById('error_refused_connection').classList.add('display-none');document.getElementById('error_accept_pending').classList.remove('display-none');break;
@@ -85,7 +85,7 @@ function isEthereumProviderInstalled() {
 
 function InizializeConnection(){
   Contract.deploy()
-  web3.eth.net.isListening().then(function(){
+  web3.eth.getAccounts().then(function(){
     console.log("connect");
     Connect();})}
 
