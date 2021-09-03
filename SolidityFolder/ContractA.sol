@@ -38,7 +38,7 @@ contract contractA{
         emit Paysent(calcDiscount);
     }
     
-    function payAndApplyDiscount(address payable _address,uint _RequestedDiscount) validAddress(_address) amountAboveZero(_RequestedDiscount) amountAboveZero(msg.value) external payable{
+    function payAndApplyDiscount(address payable _address,uint _RequestedDiscount) ValidDiscountRequest(_address,_RequestedDiscount) validAddress(_address) amountAboveZero(_RequestedDiscount) amountAboveZero(msg.value) external payable{
         StorageContract.useDiscountAndDelete(_address,_RequestedDiscount);
         emit PayDiscount(msg.value);
     }

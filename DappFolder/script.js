@@ -47,7 +47,7 @@ document.getElementById('error_accept_pending').classList.add('display-none');do
 
 // Contract
 const Contract = {
- address : "0xdb5ac5aa3775de865f967ee672e0d31e8e6532e6",
+ address : "0x707dfe9f4ffd94dc6d57b3b3f1529dd40babd4fe",
  abi : ReturnJSON(),
  contract : undefined,
  credit : undefined,
