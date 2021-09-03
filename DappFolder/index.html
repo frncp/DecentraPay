@@ -47,7 +47,7 @@
     <form class="payment-input-form" onsubmit="SubmitForm();return false">
         <label for="amount_input" class="display-block">Payment amount</label>
         <div id="payment_info_section">
-        <input class="input-large" type="number" min="0.01" step="0.01" name="amount_input" id="amount_input" required>
+        <input class="input-large" type="number"  min="0.1" step="0.1" name="amount_input" id="amount_input" required>
         <select class="input-large" name="unit_selection_list" id="unit_selection_list" onchange="adaptMinValueToUnit()" onload="adaptMinValueToUnit()">
           <option value="wei">Wei</option>
           <option value="gwei">Gwei</option>
@@ -59,7 +59,7 @@
         <input type="checkbox" name="discount_checkbox" id="discount_checkbox" onclick="enableDiscount()"> <label for="discount_checkbox">I would like to have a discount</label>
 
 <label for="discount_amount_input" class="display-block">Discount amount</label>
-        <input class="input-large" value="0" step="0.01" type="number" name="discount_amount_input" id="discount_amount_input" disabled>
+        <input class="input-large" value="0" min="0.1" step="0.1" type="number" name="discount_amount_input" id="discount_amount_input" disabled>
       </div>
       <div id="payment_submission_section">
         <input class="payment-button" type="submit" value="Submit Payment" id="payment-button">

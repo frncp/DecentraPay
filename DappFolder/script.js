@@ -47,7 +47,7 @@ document.getElementById('error_accept_pending').classList.add('display-none');do
 
 // Contract
 const Contract = {
- address : "0x741247eee7cdf53e89caec14cff9a15172decddd",
+ address : "0xdb5ac5aa3775de865f967ee672e0d31e8e6532e6",
  abi : ReturnJSON(),
  contract : undefined,
  credit : undefined,
@@ -99,6 +99,8 @@ async function PayWithoutDiscount(x,AmountToPay){
 async function PayWithDiscount(x,AmountToPay,DiscountRequest){
   if(Number(Contract.credit) >= Number(DiscountRequest)){
   AmountToPay = AmountToPay - DiscountRequest;
+  console.log(AmountToPay);
+  console.log(DiscountRequest);
   await Contract.contract.methods.payAndApplyDiscount(x,DiscountRequest).send({from: x,value: AmountToPay});
   }
 }
