@@ -61,8 +61,13 @@ const Contract = {
 })
  },
  fetchCredit : async function(wallet) {
-    if (this.contract)
+    if (this.contract){
+      try{
      this.credit = await this.contract.methods.getMyCredit(wallet.address).call({from: wallet.address});
+      }catch(err){
+        this.credit = 0;
+      }
+    }
  }
 }
 
@@ -89,8 +94,16 @@ function getAddress(){
 
 function getCredit(){
   Contract.fetchCredit(Wallet).then( function() {
-  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei((Contract.credit).toString(),"ether") + " ether"; })
+    if(Contract.credit != 0){
+  document.getElementById("balance_information_web3").innerHTML = web3.utils.fromWei((Contract.credit).toString(),"ether") + " ether"; 
+  document.getElementById('error_cant_use_this_chain').classList.add('display-none')  
+  }else{
+      document.getElementById("balance_information_web3").innerHTML = "Balance Unavailable";
+      document.getElementById('error_cant_use_this_chain').classList.remove('display-none')
+    }
+});
 }
+
 
 async function PayWithoutDiscount(x,AmountToPay){
   await Contract.contract.methods.payRequireDiscount(x).send({from: x, value: AmountToPay});
