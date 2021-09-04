@@ -53,11 +53,6 @@ contract contractA{
         _;
     }
 
-    modifier UnderFlowDetection(uint _Value) {
-        require((_Value/10000)*10000 == _Value);
-        _;
-    }
-
     modifier OnlyOwnerof(){
         require(msg.sender == owner);
         _;
@@ -75,6 +70,7 @@ contract contractA{
     
     function setStorageContract(address _address) external OnlyOwnerof{
         Storage_address = _address;
+        StorageContract = ContractB(Storage_address);
     }
     
     function getStorageContract() external OnlyOwnerof view returns(address){

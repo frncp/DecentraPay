@@ -12,21 +12,34 @@ event PaymentDone(address sender,uint value);
 
 receive() external payable{}
 
-function useDiscountAndDelete(address payable _address,uint _DiscountRequest) external payable{
+function useDiscountAndDelete(address payable _address,uint _DiscountRequest) validAddress(_address) amountAboveZero(_DiscountRequest) ValidDiscountRequest(_address,_DiscountRequest) external payable{
     require(_DiscountRequest <= AddrMap[_address],"Balance not sufficent");
-    require((_DiscountRequest/10000)*10000 == _DiscountRequest);
     AddrMap[_address] -= _DiscountRequest;
-    (bool sent,) = _address.call{value: _DiscountRequest, gas: 2300}("");
+    (bool sent,) = msg.sender.call{value: _DiscountRequest, gas: 2300}("");
     require(sent,"Transaction Failed");
-    emit PaymentDone(msg.sender,msg.value);
 
 }
 
 
-function payAndRequestDiscount(address _address,uint256 _DiscountRequest) external payable{
+function payAndRequestDiscount(address _address,uint256 _DiscountRequest) validAddress(_address) amountAboveZero(_DiscountRequest) external payable{
     addAddress(_address);
     addDiscount(_address,_DiscountRequest);
 }
+
+ modifier validAddress(address _address){
+        require(_address != address(0));
+        _;
+    }
+
+modifier amountAboveZero(uint _amount){
+        require(_amount > 0 );
+        _;
+    }
+
+modifier ValidDiscountRequest(address _address,uint _RequestedDiscount) {
+        require(AddrMap[_address] >= _RequestedDiscount);
+        _;
+    }
 
 
 function addDiscount(address _address,uint _discountRequest) internal{
