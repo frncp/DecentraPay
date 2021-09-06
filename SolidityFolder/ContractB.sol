@@ -1,7 +1,7 @@
 pragma solidity ^0.8.4;
 
 
-contract ContractB{
+contract StorageContract{
     
 mapping(address => uint256) AddrMap; 
 mapping(address => bool) IfExistAddress;

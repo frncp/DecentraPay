@@ -1,4 +1,4 @@
-var _inputaddress = "0x99734259c5a133087e6297f396bd878b78f5711d";
+var _inputaddress = "0xb8bfa77c0bab0283e4e44035b215885c3c7355fb";
 var OldSelection = 'ether';
 
 window.onload = function () {
@@ -362,19 +362,6 @@ function ReturnJSON() {
       "type": "function"
     },
     {
-      "inputs": [],
-      "name": "getStorageContractBalance",
-      "outputs": [
-        {
-          "internalType": "uint256",
-          "name": "",
-          "type": "uint256"
-        }
-      ],
-      "stateMutability": "view",
-      "type": "function"
-    },
-    {
       "inputs": [
         {
           "internalType": "address payable",
@@ -408,7 +395,7 @@ function ReturnJSON() {
     {
       "inputs": [
         {
-          "internalType": "address payable",
+          "internalType": "address",
           "name": "_address",
           "type": "address"
         }
