@@ -3,17 +3,13 @@ pragma solidity ^0.8.4;
 
 contract StorageContract{
     
-mapping(address => uint256) AddrMap; 
-mapping(address => bool) IfExistAddress;
+mapping(address => uint) private AddrMap; 
+mapping(address => bool) private IfExistAddress;
 address[] private Accounts;
-
-
-event PaymentDone(address sender,uint value);
 
 receive() external payable{}
 
 function useDiscountAndDelete(address payable _address,uint _DiscountRequest) validAddress(_address) amountAboveZero(_DiscountRequest) ValidDiscountRequest(_address,_DiscountRequest) external payable{
-    require(_DiscountRequest <= AddrMap[_address],"Balance not sufficent");
     AddrMap[_address] -= _DiscountRequest;
     (bool sent,) = msg.sender.call{value: _DiscountRequest, gas: 2300}("");
     require(sent,"Transaction Failed");
@@ -21,7 +17,7 @@ function useDiscountAndDelete(address payable _address,uint _DiscountRequest) va
 }
 
 
-function payAndRequestDiscount(address _address,uint256 _DiscountRequest) validAddress(_address) amountAboveZero(_DiscountRequest) external payable{
+function payAndRequestDiscount(address _address,uint _DiscountRequest) validAddress(_address) amountAboveZero(_DiscountRequest) external payable{
     addAddress(_address);
     addDiscount(_address,_DiscountRequest);
 }
@@ -37,7 +33,7 @@ modifier amountAboveZero(uint _amount){
     }
 
 modifier ValidDiscountRequest(address _address,uint _RequestedDiscount) {
-        require(AddrMap[_address] >= _RequestedDiscount);
+        require(AddrMap[_address] >= _RequestedDiscount,"Balance not sufficent");
         _;
     }
 

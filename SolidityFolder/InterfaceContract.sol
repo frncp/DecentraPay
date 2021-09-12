@@ -10,7 +10,7 @@ interface StorageContract{
 
 contract InterfaceContract{
     
-    event Paysent(uint256 value);
+    event Paysent(uint value);
 
     event PayDiscount(uint value);
     
@@ -32,7 +32,7 @@ contract InterfaceContract{
     receive() external payable{}
     
     function payRequireDiscount(address payable _address)  amountAboveZero(msg.value) validAddress(_address) external payable{
-        uint256 calcDiscount = msg.value*actualDiscount/100;
+        uint calcDiscount = msg.value*actualDiscount/100;
         StorageInstance.payAndRequestDiscount{value: calcDiscount}(_address,calcDiscount);
         emit Paysent(calcDiscount);
     }
@@ -42,18 +42,13 @@ contract InterfaceContract{
         emit PayDiscount(msg.value);
     }
     
-    function getMyCredit(address _address) public view returns(uint){
+    function getMyCredit(address _address) public validAddress(_address) view returns(uint){
         uint balance = StorageInstance.GetDiscount(_address);
         return balance;
     }
 
     modifier ValidDiscountRequest(address _address,uint _RequestedDiscount) {
         require(StorageInstance.GetDiscount(_address) >= _RequestedDiscount);
-        _;
-    }
-
-    modifier UnderFlowDetection(uint _Value) {
-        require((_Value/10000)*10000 == _Value);
         _;
     }
 
@@ -72,7 +67,7 @@ contract InterfaceContract{
         _;
     }
     
-    function setStorageContract(address _address) external OnlyOwnerof{
+    function setStorageContract(address _address) external OnlyOwnerof validAddress(_address){
         Storage_address = _address;
         StorageInstance = StorageContract(Storage_address);
     }
@@ -82,7 +77,7 @@ contract InterfaceContract{
     }
     
     function SetDiscount(uint _discount) external OnlyOwnerof{
-        require(actualDiscount >= 0 && actualDiscount<=100);
+        require(_discount >= 0 && _discount<=100);
         actualDiscount = _discount;
     }
     
@@ -94,9 +89,10 @@ contract InterfaceContract{
         return address(this).balance;
     }
     
-    function setOwner(address payable _address) external OnlyOwnerof{
+    function setOwner(address _address) external OnlyOwnerof validAddress(_address){
         owner = _address;
     }
+    
     
     function withdrow() external OnlyOwnerof{
     payable(msg.sender).transfer(address(this).balance);
