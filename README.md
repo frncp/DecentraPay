@@ -1,2 +1,5 @@
 # DecentraPay
-Dapp per la gestione dei pagamenti di un negozio virtuale. Progetto realizzato per il corso di Reti di Calcolatori dell'Università degli Studi di Napoli "Parthenope".
+A simple Dapp which allows you to pay and collect discount credit you can use for future purchases.
+
+| :exclamation:  This project was made for learning purposes only, do not send any Ethereum before auditing the code. <br>:no_entry_sign: Security is NOT guaranteed. |
+|------------------------------------------------------------------------------------------------------------------------------------------|
